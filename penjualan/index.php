@@ -9,7 +9,8 @@ if (!session_is_login()) {
 
 $title = "Penjualan";
 
-$penjualan = db_get('penjualan');
+$penjualan = db_list_penjualan();
+// $penjualan = db_get('penjualan');
 $message = session_flash('message');
 $error = session_flash('error');
 
@@ -138,6 +139,7 @@ if (isset($_POST['penjualan'])) {
                         <th>No</th>
                         <th>No Transaksi</th>
                         <th>Tanggal</th>
+                        <th>Total</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -147,6 +149,7 @@ if (isset($_POST['penjualan'])) {
                             <td><?= $key + 1 ?></td>
                             <td><?= $value['no_transaksi'] ?></td>
                             <td><?= $value['tgl_transaksi'] ?></td>
+                            <td><?= number_format($value['total'], 0, ',', '.') ?></td>
                             <td><a href="#" class="btn btn-info" onclick="tampil('<?= $value['no_transaksi'] ?>')">Lihat</a>
                                 <?php if (session_is_admin()) { ?>
                                     <a href="edit.php?no_transaksi=<?= $value['no_transaksi'] ?>" class="btn btn-warning">Edit</a>

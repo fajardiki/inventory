@@ -9,7 +9,8 @@ if (!session_is_login()) {
 
 $title = "Pembelian";
 
-$pembelian = db_get('pembelian');
+$pembelian = db_list_pembelian();
+// $pembelian = db_get('pembelian');
 $message = session_flash('message');
 $error = session_flash('error');
 
@@ -141,6 +142,7 @@ if (isset($_POST['pembelian'])) {
                         <th>No</th>
                         <th>No Faktur</th>
                         <th>Tanggal</th>
+                        <th>Total</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -150,6 +152,7 @@ if (isset($_POST['pembelian'])) {
                             <td><?= $key + 1 ?></td>
                             <td><?= $value['no_faktur'] ?></td>
                             <td><?= $value['tgl_transaksi'] ?></td>
+                            <td>Rp<?= number_format($value['total'], 0, ',', '.') ?></td>
                             <td><a href="#" class="btn btn-info" onclick="tampil('<?= $value['no_faktur'] ?>')">Lihat</a>
                                 <?php if (session_is_admin()) { ?>
                                     <a href="edit.php?no_faktur=<?= $value['no_faktur'] ?>" class="btn btn-warning">Edit</a>

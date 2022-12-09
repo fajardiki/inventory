@@ -45,3 +45,39 @@ function db_delete($table, $where) {
     $sql = "DELETE FROM $table WHERE $where";
     return mysqli_query($GLOBALS['koneksi'], $sql);
 }
+
+function db_list_penjualan()
+{
+    $sql = "
+        SELECT 
+            a.*,
+            COALESCE(SUM(b.total), 0) AS total 
+        FROM
+            penjualan a
+            LEFT JOIN penjualan_barang b
+                ON b.no_transaksi = a.no_transaksi
+        GROUP BY a.no_transaksi 
+    ";
+
+    $result = mysqli_query($GLOBALS['koneksi'], $sql);
+    $data = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    return $data;
+}
+
+function db_list_pembelian()
+{
+    $sql = "
+        SELECT 
+            a.*,
+            COALESCE(SUM(b.total), 0) AS total 
+        FROM
+            pembelian a
+            LEFT JOIN pembelian_barang b
+                ON b.no_faktur = a.no_faktur 
+        GROUP BY a.no_faktur 
+    ";
+
+    $result = mysqli_query($GLOBALS['koneksi'], $sql);
+    $data = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    return $data;
+}
