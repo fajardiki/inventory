@@ -47,6 +47,9 @@ if (isset($_POST['pembelian'])) {
             <?php if (session_is_admin()) { ?>
                 <p><a href="#" class="btn btn-primary" onclick="tambah()">Tambah</a></p>
             <?php } ?>
+            <?php if (!session_is_admin()) { ?>
+                <p><a href="#" class="btn btn-warning" onclick="print()">Report</a></p>
+            <?php } ?>
             <div class="modal fade" id="modalTambah" tabindex="-1" role="dialog" aria-labelledby="modalTambah" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -57,7 +60,7 @@ if (isset($_POST['pembelian'])) {
                             </button>
                         </div>
                         <form method="POST">
-                        <div class="modal-body">
+                            <div class="modal-body">
                                 <div class="form-group">
                                     <label for="no_faktur">No Faktur</label>
                                     <input type="text" class="form-control" id="no_faktur" name="no_faktur" placeholder="No Faktur">
@@ -183,6 +186,32 @@ if (isset($_POST['pembelian'])) {
                     <?php endforeach; ?>
                 </tbody>
             </table>
+            <!-- untuk cetak -->
+            <div id="print-area" hidden>
+                <h1>Laporan Pembelian</h1>
+                <table class="table-print" style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">No</th>
+                            <th style="width: 130px;">No Faktur</th>
+                            <th style="width: 100px;">Tanggal</th>
+                            <th>Barang</th>
+                            <th style="width: 120px;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($pembelian as $key => $value) : ?>
+                            <tr>
+                                <td style="text-align: center;"><?= $key + 1 ?>. </td>
+                                <td><?= $value['no_faktur'] ?></td>
+                                <td><?= date_format(date_create($value['tgl_transaksi']), 'd-m-Y') ?></td>
+                                <td><?= $value['barang'] ?></td>
+                                <td>Rp <?= number_format($value['total'], 0, ',', '.') ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

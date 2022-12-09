@@ -2,4 +2,4 @@
 2. Tambahin tulisan/gambar di halaman utama (setelah login)
 3. (DONE) Di data barang, rak dll bisa keisi angka minus (kayak -10) padahal harusnya ga bisa
 4. (DONE) Di database pembelianbrg dan penjualanbrg ada 'total'. Itu harus dipindahin ke database pembelian dan penjualan 
-5. Cetak laporan penjualan pembelian 
+5. (DONE) Cetak laporan penjualan pembelian 

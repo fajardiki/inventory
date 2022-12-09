@@ -51,12 +51,15 @@ function db_list_penjualan()
     $sql = "
         SELECT 
             a.*,
-            COALESCE(SUM(b.total), 0) AS total 
+            COALESCE(SUM(b.total), 0) AS total, 
+            GROUP_CONCAT(barang.nama_brg SEPARATOR ', ') AS barang
         FROM
-            penjualan a
-            LEFT JOIN penjualan_barang b
-                ON b.no_transaksi = a.no_transaksi
-        GROUP BY a.no_transaksi 
+            penjualan a 
+            LEFT JOIN penjualan_barang b 
+                ON b.no_transaksi = a.no_transaksi 
+            LEFT JOIN barang 
+                ON barang.kode_brg = b.kode_brg
+        GROUP BY a.no_transaksi  
     ";
 
     $result = mysqli_query($GLOBALS['koneksi'], $sql);
@@ -69,11 +72,14 @@ function db_list_pembelian()
     $sql = "
         SELECT 
             a.*,
-            COALESCE(SUM(b.total), 0) AS total 
+            COALESCE(SUM(b.total), 0) AS total, 
+            GROUP_CONCAT(barang.nama_brg SEPARATOR ', ') AS barang
         FROM
             pembelian a
             LEFT JOIN pembelian_barang b
                 ON b.no_faktur = a.no_faktur 
+            LEFT JOIN barang 
+                ON barang.kode_brg = b.kode_brg 
         GROUP BY a.no_faktur 
     ";
 

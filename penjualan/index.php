@@ -47,6 +47,9 @@ if (isset($_POST['penjualan'])) {
             <?php if (session_is_admin()) { ?>
                 <p><a href="#" class="btn btn-primary" onclick="tambah()">Tambah</a></p>
             <?php } ?>
+            <?php if (!session_is_admin()) { ?>
+                <p><a href="#" class="btn btn-warning" onclick="print()">Report</a></p>
+            <?php } ?>
             <div class="modal fade" id="modalTambah" tabindex="-1" role="dialog" aria-labelledby="modalTambah" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -180,6 +183,32 @@ if (isset($_POST['penjualan'])) {
                     <?php endforeach; ?>
                 </tbody>
             </table>
+            <!-- untuk cetak -->
+            <div id="print-area" hidden>
+                <h1>Laporan Penjualan</h1>
+                <table class="table-print" style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">No</th>
+                            <th style="width: 130px;">No Transaksi</th>
+                            <th style="width: 100px;">Tanggal</th>
+                            <th>Barang</th>
+                            <th style="width: 120px;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($penjualan as $key => $value) : ?>
+                            <tr>
+                                <td style="text-align: center;"><?= $key + 1 ?>. </td>
+                                <td><?= $value['no_transaksi'] ?></td>
+                                <td><?= date_format(date_create($value['tgl_transaksi']), 'd-m-Y') ?></td>
+                                <td><?= $value['barang'] ?></td>
+                                <td>Rp <?= number_format($value['total'], 0, ',', '.') ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

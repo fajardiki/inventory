@@ -4,8 +4,13 @@ $stok_tipis = db_get('barang', 'stok <= stok_ambang');
 ?>
 <script>
     $(document).ready(function() {
-        $('#table').DataTable();
+        $('#table').DataTable({
+            buttons: [
+                'pdf'
+            ]
+        });
     });
+    
     <?php foreach ($stok_tipis as $barang) { ?>
         Toastify({
             text: "Stok <?= $barang['nama_brg'] ?> tinggal <?= $barang['stok'] ?>",

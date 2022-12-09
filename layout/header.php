@@ -8,14 +8,14 @@
     <title><?= $title ?: 'Page' ?> | Sistem Inventory</title>
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/site.min.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css">
-    <link rel="stylesheet" href="//cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="<?= BASE_URL ?>/assets/css/toastify.min.css">
     <script src="<?= BASE_URL ?>/assets/js/jquery-1.10.1.min.js"></script>
     <script src="<?= BASE_URL ?>/assets/js/bootstrap.min.js"></script>
     <script src="<?= BASE_URL ?>/assets/js/jquery-mask.min.js"></script>
     <script src="<?= BASE_URL ?>/assets/js/helper.js"></script>
-    <script src="//cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="<?= BASE_URL ?>/assets/js/toastify-js"></script>
 </head>
 
 <body>
