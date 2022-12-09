@@ -21,6 +21,20 @@ if (isset($_POST['submit'])) {
     $gambar = $_POST['gambar'];
 
     try {
+        // upload_gambar
+        if ($_FILES['gambar']) {
+            $nama = $_FILES['gambar']['name'];
+            $file_tmp = $_FILES['gambar']['tmp_name'];
+            if (file_exists('../assets/img/' . $nama)) {
+                throw new Exception("File dengan nama $nama sudah ada!");
+            }
+
+            move_uploaded_file($file_tmp, '../assets/img/' . $nama);
+            if (file_exists('../assets/img/' . $nama)) {
+                $gambar = $nama;
+            }
+        }
+
         $barang = db_get_one('barang', "kode_brg='$kode_brg'");
         if ($barang) {
             throw new Exception('Kode barang sudah digunakan');
@@ -43,6 +57,7 @@ if (isset($_POST['submit'])) {
             session_flash('error', 'Data gagal ditambahkan');
         }
     } catch (Exception $e) {
+        unlink('../assets/img/' . $nama);
         session_flash('error', $e->getMessage());
     }
 }
@@ -76,7 +91,7 @@ $error = session_flash('error');
                     <?= $message ?>
                 </div>
             <?php endif; ?>
-            <form action="" method="post">
+            <form action="" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="kode_brg">Kode Barang</label>
                     <input type="text" name="kode_brg" id="kode_brg" class="form-control" placeholder="Kode Barang" value="<?= $kode_brg ?? '' ?>" required>
@@ -110,13 +125,20 @@ $error = session_flash('error');
                     <select name="kode_rak" id="kode_rak" class="form-control" required>
                         <option value="">Pilih Rak</option>
                         <?php foreach ($rak as $r) : ?>
-                            <option value="<?= $r['kode_rak'] ?>" <?= $r['kode_rak'] == $kode_rak ? 'selected' : '' ?>><?= $r['kode_rak'] ?></option>
+                            <option value="<?= $r['kode_rak'] ?>" <?= isset($kode_rak) && $r['kode_rak'] == $kode_rak ? 'selected' : '' ?>><?= $r['kode_rak'] ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="gambar">Gambar</label>
-                    <input type="file" name="gambar" id="gambar" class="form-control" placeholder="Stok Ambang" value="<?= $barang ?? '' ?>" required>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <?php if (isset($barang['gambar']) && !is_null($barang['gambar'])) : ?>
+                                <img style="margin-bottom: 5px;" src="../assets/img/<?= $barang['gambar'] ?>" alt="gambar" width="350">
+                            <?php endif; ?>
+                            <input type="file" name="gambar" id="gambar" class="form-control" placeholder="Stok Ambang" value="<?= $gambar ?>" required>
+                        </div>
+                    </div>
                 </div>
                 <button type="submit" name="submit" class="btn btn-primary">Simpan</button>
             </form>
