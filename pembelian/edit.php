@@ -40,6 +40,12 @@ if (isset($_POST['tambah'])) {
     $result2 = db_update('barang', [
         'stok' => $barang['stok'] + $jumlah
     ], "kode_brg='$kode_brg'");
+    // isi colum total table pembelian
+    $jumlah_beli_barang = db_get('pembelian_barang', "no_faktur='$no_faktur'");
+    $sum_total = array_sum(array_column($jumlah_beli_barang, 'total'));
+    $result3 = db_update('pembelian', [
+        'total' => $sum_total
+    ], "no_faktur='$no_faktur'");
 
     if ($result && $result2) {
         session_flash('message', 'Data berhasil ditambahkan');
@@ -66,6 +72,13 @@ if (isset($_POST['edit'])) {
     $result2 = db_update('barang', [
         'stok' => $barang['stok'] - $old_detail['jumlah'] + $jumlah
     ], "kode_brg='$kode_brg'");
+    // isi colum total table pembelian
+    $jumlah_beli_barang = db_get('pembelian_barang', "no_faktur='$no_faktur'");
+    $sum_total = array_sum(array_column($jumlah_beli_barang, 'total'));
+    $result2 = db_update('pembelian', [
+        'total' => $sum_total
+    ], "no_faktur='$no_faktur'");
+
     if ($result && $result2) {
         session_flash('message', 'Data berhasil diubah');
     } else {

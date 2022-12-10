@@ -38,6 +38,13 @@ if (isset($_POST['tambah'])) {
     $result2 = db_update('barang', [
         'stok' => $barang['stok'] - $jumlah
     ], "kode_brg='$kode_brg'");
+    // isi colum total table pembelian
+    $jumlah_jual_barang = db_get('penjualan_barang', "no_transaksi='$no_transaksi'");
+    $sum_total = array_sum(array_column($jumlah_jual_barang, 'total'));
+    $result3 = db_update('penjualan', [
+        'total' => $sum_total
+    ], "no_transaksi='$no_transaksi'");
+
     if ($result && $result2) {
         session_flash('message', 'Data berhasil ditambahkan');
     } else {
@@ -61,6 +68,13 @@ if (isset($_POST['edit'])) {
     $result2 = db_update('barang', [
         'stok' => $barang['stok'] - $old_detail['jumlah'] - $jumlah
     ], "kode_brg='$kode_brg'");
+    // isi colum total table pembelian
+    $jumlah_jual_barang = db_get('penjualan_barang', "no_transaksi='$no_transaksi'");
+    $sum_total = array_sum(array_column($jumlah_jual_barang, 'total'));
+    $result3 = db_update('penjualan', [
+        'total' => $sum_total
+    ], "no_transaksi='$no_transaksi'");
+
     if ($result && $result2) {
         session_flash('message', 'Data berhasil diubah');
     } else {
@@ -123,7 +137,7 @@ $error = session_flash('error');
                                         <label for="kode_brg">Barang</label>
                                         <select name="kode_brg" class="form-control">
                                             <?php foreach ($semua_barang as $barang) { ?>
-                                                <option value="<?= $barang['kode_brg'] ?>" ><?= $barang['nama_brg'] ?></option>
+                                                <option value="<?= $barang['kode_brg'] ?>"><?= $barang['nama_brg'] ?></option>
                                             <?php } ?>
                                         </select>
                                     </div>
@@ -166,7 +180,7 @@ $error = session_flash('error');
                 </thead>
                 <tbody>
                     <?php foreach ($penjualan_barang as $key => $value) {
-                        $barang = db_get_one('barang', "kode_brg='" . $value['kode_brg'] . "'");?>
+                        $barang = db_get_one('barang', "kode_brg='" . $value['kode_brg'] . "'"); ?>
                         <tr>
                             <td><?= $key + 1 ?></td>
                             <td><?= $value['kode_brg'] ?></td>
@@ -245,7 +259,7 @@ $error = session_flash('error');
     function tambah() {
         $(`#modalTambah`).modal('show');
     }
-    
+
     function edit(id_detail) {
         $(`#modalEdit${id_detail}`).modal('show');
     }
