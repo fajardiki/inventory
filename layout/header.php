@@ -15,6 +15,7 @@
     <script src="<?= BASE_URL ?>/assets/js/jquery-mask.min.js"></script>
     <script src="<?= BASE_URL ?>/assets/js/helper.js"></script>
     <script src="<?= BASE_URL ?>/assets/js/jquery.dataTables.min.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/chart.js"></script>
     <script type="text/javascript" src="<?= BASE_URL ?>/assets/js/toastify-js"></script>
 </head>
 
