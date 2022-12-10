@@ -28,7 +28,7 @@ CREATE TABLE `barang` (
   `stok` int(11) NOT NULL,
   `stok_ambang` int(11) NOT NULL,
   `kode_rak` varchar(10) COLLATE utf8_bin NOT NULL,
-  `barang` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `gambar` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`kode_brg`),
   UNIQUE KEY `nama_brg` (`nama_brg`),
   KEY `kode_rak` (`kode_rak`),
@@ -37,7 +37,7 @@ CREATE TABLE `barang` (
 
 /*Data for the table `barang` */
 
-insert  into `barang`(`kode_brg`,`nama_brg`,`ukuran`,`harga`,`stok`,`stok_ambang`,`kode_rak`,`barang`) values ('AB002','Box Styrofoam Tuna','37x23x16cm',15000,121,15,'RA1',NULL),('BX001','Box Styrofoam 2KG','28,5x15,5x16,5 cm',12000,112,20,'RA1',NULL),('ICE450','Ice Gel Thermapack 450gr','-',13500,20,5,'RB1',NULL);
+insert  into `barang`(`kode_brg`,`nama_brg`,`ukuran`,`harga`,`stok`,`stok_ambang`,`kode_rak`,`gambar`) values ('AB002','Box Styrofoam Tuna','37x23x16cm',15000,107,15,'RA1','Introvert.jpg'),('BX001','Box Styrofoam 2KG','28,5x15,5x16,5 cm',12000,112,20,'RA1','Sendir.jpg'),('ICE450','Ice Gel Thermapack 450gr','-',13500,0,5,'RB1','Sendiri.jpg'),('test_01','test','20X20',12000,50,10,'1','flutter.png');
 
 /*Table structure for table `pembelian` */
 
@@ -79,7 +79,7 @@ CREATE TABLE `pembelian_barang` (
 
 /*Data for the table `pembelian_barang` */
 
-insert  into `pembelian_barang`(`id_detail`,`no_faktur`,`kode_brg`,`kode_sup`,`jumlah`,`total`) values (6,'PT80802818031','BX001','SPT001',200,0),(8,'PT123456789','ICE450','SPT001',10,0),(13,'TEST71222','AB002','SPT001',5,75000),(15,'TEST71222','AB002','SPT001',5,75000);
+insert  into `pembelian_barang`(`id_detail`,`no_faktur`,`kode_brg`,`kode_sup`,`jumlah`,`total`) values (6,'PT80802818031','BX001','SPT001',200,2400000),(8,'PT123456789','ICE450','SPT001',10,135000),(13,'TEST71222','AB002','SPT001',5,75000),(15,'TEST71222','AB002','SPT001',5,75000);
 
 /*Table structure for table `pengguna` */
 
@@ -133,7 +133,7 @@ CREATE TABLE `penjualan_barang` (
 
 /*Data for the table `penjualan_barang` */
 
-insert  into `penjualan_barang`(`id_detail`,`no_transaksi`,`kode_brg`,`jumlah`,`total`) values (1,'TK20220718DFK9N','BX001',10,0),(2,'TK20220718DFK9N','ICE450',5,0),(10,'AB1213242942','AB002',7,0),(13,'AB1213242942','ICE450',6,0),(14,'TK20220718DFK9N','ICE450',2,0),(15,'TK20220718DFK9N','ICE450',2,0),(16,'AB1213242942','ICE450',4,0);
+insert  into `penjualan_barang`(`id_detail`,`no_transaksi`,`kode_brg`,`jumlah`,`total`) values (1,'TK20220718DFK9N','BX001',10,0),(2,'TK20220718DFK9N','ICE450',5,0),(10,'AB1213242942','AB002',7,105000),(13,'AB1213242942','ICE450',6,81000),(14,'TK20220718DFK9N','ICE450',2,0),(15,'TK20220718DFK9N','ICE450',2,0),(16,'AB1213242942','ICE450',4,54000);
 
 /*Table structure for table `rak` */
 
