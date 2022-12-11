@@ -76,10 +76,10 @@ $error = session_flash('error');
                         <th>Kode Barang</th>
                         <th>Gambar</th>
                         <th>Nama Barang</th>
-                        <th>Ukuran</th>
-                        <th>Harga</th>
+                        <!-- <th>Ukuran</th> -->
+                        <!-- <th>Harga</th> -->
                         <th>Stok</th>
-                        <th>Stok Ambang</th>
+                        <!-- <th>Stok Ambang</th> -->
                         <th>Rak</th>
                         <?php if (session_is_admin()) { ?>
                             <th>Aksi</th>
@@ -97,10 +97,10 @@ $error = session_flash('error');
                                 <?php endif; ?>
                             </td>
                             <td><?= $value['nama_brg'] ?></td>
-                            <td><?= $value['ukuran'] ?></td>
-                            <td>Rp<?= number_format($value['harga'], 2, ',', '.') ?></td>
+                            <!-- <td><?= $value['ukuran'] ?></td> -->
+                            <!-- <td>Rp<?= number_format($value['harga'], 2, ',', '.') ?></td> -->
                             <td><?= $value['stok'] ?></td>
-                            <td><?= $value['stok_ambang'] ?></td>
+                            <!-- <td><?= $value['stok_ambang'] ?></td> -->
                             <td><a href="#" onclick="tampil('<?= $value['kode_rak'] ?>')"><?= $value['kode_rak'] ?></a></td>
                             <?php if (session_is_admin()) { ?>
                                 <td>
