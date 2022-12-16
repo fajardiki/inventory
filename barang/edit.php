@@ -27,23 +27,21 @@ if (isset($_POST['submit'])) {
     $new_stok = $_POST['stok'];
     $new_stok_ambang = $_POST['stok_ambang'];
     $new_kode_rak = $_POST['kode_rak'];
-    $new_gambar = null;
+    $new_gambar = $_POST['gambar'];
 
     try {
         // upload_gambar
+        echo json_encode($_FILES['gambar']);
         if ($_FILES['gambar']) {
             $nama = $_FILES['gambar']['name'];
             $file_tmp = $_FILES['gambar']['tmp_name'];
-            if (file_exists('../assets/img/' . $nama)) {
-                throw new Exception("File dengan nama $nama sudah ada!");
-            }
-
-            move_uploaded_file($file_tmp, '../assets/img/' . $nama);
-            if (file_exists('../assets/img/' . $nama)) {
-                $new_gambar = $nama;
+            if (!file_exists('../assets/img/' . $nama)) {
+                move_uploaded_file($file_tmp, '../assets/img/' . $nama);
+                if (file_exists('../assets/img/' . $nama)) {
+                    $new_gambar = $nama;
+                }
             }
         }
-
         if ($new_kode_brg != $kode_brg) {
             $barang = db_get_one('barang', "kode_brg='$new_kode_brg'");
             if ($barang) {
@@ -125,10 +123,10 @@ $error = session_flash('error');
                         <span class="input-group-addon">,00</span>
                     </div>
                 </div>
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label for="stok">Stok</label>
                     <input type="number" name="stok" id="stok" class="form-control" min="0" onkeypress="input_number(event)" placeholder="Stok" value="<?= $barang['stok'] ?>" required>
-                </div>
+                </div> -->
                 <div class="form-group">
                     <label for="stok_ambang">Stok Ambang</label>
                     <input type="number" name="stok_ambang" id="stok_ambang" class="form-control" min="0" onkeypress="input_number(event)" placeholder="Stok Ambang" value="<?= $barang['stok_ambang'] ?>" required>
@@ -149,7 +147,7 @@ $error = session_flash('error');
                             <?php if (!is_null($barang['gambar'])) : ?>
                                 <img style="margin-bottom: 5px;" src="../assets/img/<?= $barang['gambar'] ?>" alt="gambar" width="350">
                             <?php endif; ?>
-                            <input type="file" name="gambar" id="gambar" class="form-control" placeholder="Stok Ambang" value="<?= $gambar ?>" required>
+                            <input type="file" name="gambar" id="gambar" class="form-control" placeholder="Stok Ambang" value="<?= $gambar ?>">
                         </div>
                     </div>
                 </div>

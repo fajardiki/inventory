@@ -3,3 +3,14 @@
 3. (DONE) Di data barang, rak dll bisa keisi angka minus (kayak -10) padahal harusnya ga bisa
 4. (DONE) Di database pembelianbrg dan penjualanbrg ada 'total'. Itu harus dipindahin ke database pembelian dan penjualan 
 5. (DONE) Cetak laporan penjualan pembelian 
+
+_____
+
+1. (DONE) Tanggal semua transaksi ga bisa backdate (bisanya di hari h dan kedepannya aja)
+2. Ada stok opname isinya kodebrg, nama brg sama stok opnamenya (di databasenya) terus dipanggil di penjualan barang dan pembelian barang
+3. Cetak laporannya bisa per minggu, harian, bulanan, tahunan, per kode brg, per nama brg, per kodesup, nama supplier.
+4. Di menu penjualan dan pembelian, kalo isi kosong terus simpan langsung kesimpan. Harusnya ga bisa jadi ini paling ga bisa kesimpan (kek data rak dsb) 
+5. Di menu penjualan barang dan pembelian barang, kalo tambah dan edit dikosongin itu error (terus jangan bisa pilih 0 bisa ke save) harusnya ga bisa 
+
+Tambahan
+6. (DONE) Di menu login sama main menu kan ada tulisan sistem inventory diatas, tolong tambahin logo di ssbelah tulisan sama jd tulisan "Sistem Inventory Infinity Foam"

@@ -112,10 +112,10 @@ $error = session_flash('error');
                         <span class="input-group-addon">,00</span>
                     </div>
                 </div>
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label for="stok">Stok</label>
                     <input type="number" name="stok" id="stok" class="form-control" min="0" onkeypress="input_number(event)" placeholder="Stok" value="<?= $stok ?? '' ?>" required>
-                </div>
+                </div> -->
                 <div class="form-group">
                     <label for="stok_ambang">Stok Ambang</label>
                     <input type="number" name="stok_ambang" id="stok_ambang" class="form-control" min="0" onkeypress="input_number(event)" placeholder="Stok Ambang" value="<?= $stok_ambang ?? '' ?>" required>

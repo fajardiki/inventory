@@ -67,7 +67,7 @@ if (isset($_POST['penjualan'])) {
                                 </div>
                                 <div class="form-group">
                                     <label for="tgl_transaksi">Tanggal</label>
-                                    <input type="date" class="form-control" id="tgl_transaksi" name="tgl_transaksi" placeholder="Tanggal">
+                                    <input type="date" class="form-control" min="<?= $today; ?>" id="tgl_transaksi" name="tgl_transaksi" placeholder="Tanggal">
                                 </div>
                             </div>
                             <div class="modal-footer">

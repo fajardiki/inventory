@@ -72,8 +72,27 @@ function db_list_penjualan()
     return $data;
 }
 
-function db_list_pembelian()
+function db_list_pembelian($kode_barang = null, $nama_barang = null, $kode_supplier = null, $nama_supplier = null)
 {
+    $where = null;
+    // echo $nama_supplier;
+
+    if ($kode_barang) {
+        $where .= "AND b.kode_brg LIKE '%$kode_barang%' ";
+    }
+
+    if ($nama_barang) {
+        $where .= "AND barang.nama_brg LIKE '%$nama_barang%' ";
+    }
+
+    if ($kode_supplier) {
+        $where .= "AND b.kode_sup LIKE '%$kode_supplier%' ";
+    }
+
+    if ($nama_supplier) {
+        $where .= "AND supplier.nama_sup LIKE '%$nama_supplier%' ";
+    }
+
     $sql = "
         SELECT 
             a.*,
@@ -85,8 +104,13 @@ function db_list_pembelian()
                 ON b.no_faktur = a.no_faktur 
             LEFT JOIN barang 
                 ON barang.kode_brg = b.kode_brg 
+            LEFT JOIN supplier 
+                ON supplier.kode_sup = b.kode_sup
+        WHERE 1 
+            $where 
         GROUP BY a.no_faktur 
     ";
+    
 
     $result = mysqli_query($GLOBALS['koneksi'], $sql);
     $data = mysqli_fetch_all($result, MYSQLI_ASSOC);

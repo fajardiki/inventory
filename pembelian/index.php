@@ -9,19 +9,17 @@ if (!session_is_login()) {
 
 $title = "Pembelian";
 
-$pembelian = db_list_pembelian();
-// $pembelian = db_get('pembelian');
 $message = session_flash('message');
 $error = session_flash('error');
 
-if (isset($_POST['pembelian'])) {
+$post_data = $_POST;
 
+if (isset($post_data['pembelian'])) {
     $data = [
-        'no_faktur' => $_POST['no_faktur'],
-        'tgl_transaksi' => $_POST['tgl_transaksi'],
+        'no_faktur' => $post_data['no_faktur'],
+        'tgl_transaksi' => $post_data['tgl_transaksi'],
         'username' => session_get_username()
     ];
-
     $result = db_insert('pembelian', $data);
     if ($result) {
         session_flash('message', 'Data berhasil ditambahkan');
@@ -29,7 +27,12 @@ if (isset($_POST['pembelian'])) {
         throw new Exception('Data gagal ditambahkan');
     }
     header('Location: index.php');
+} elseif (isset($post_data['filter'])) {
+    $pembelian = db_list_pembelian($post_data['kode_barang'], $post_data['nama_barang'], $post_data['kode_supplier'], $post_data['nama_supplier']);
+} else {
+    $pembelian = db_list_pembelian();
 }
+
 ?>
 
 <!-- mulai halaman -->
@@ -48,8 +51,12 @@ if (isset($_POST['pembelian'])) {
                 <p><a href="#" class="btn btn-primary" onclick="tambah()">Tambah</a></p>
             <?php } ?>
             <?php if (!session_is_admin()) { ?>
-                <p><a href="#" class="btn btn-warning" onclick="print()">Report</a></p>
+                <div class="pull-right" style="margin-bottom: 20px;">
+                    <a href="#" class="btn btn-warning" onclick="print()">Report</a>
+                    <button class="btn btn-default" onclick="filter()"><i class="fa fa-search"></i></button>
+                </div>
             <?php } ?>
+
             <div class="modal fade" id="modalTambah" tabindex="-1" role="dialog" aria-labelledby="modalTambah" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -67,12 +74,49 @@ if (isset($_POST['pembelian'])) {
                                 </div>
                                 <div class="form-group">
                                     <label for="tgl_transaksi">Tanggal</label>
-                                    <input type="date" class="form-control" id="tgl_transaksi" name="tgl_transaksi" placeholder="Tanggal">
+                                    <input type="date" min="<?= $today; ?>" class="form-control" id="tgl_transaksi" name="tgl_transaksi" placeholder="Tanggal">
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <input type="submit" name="pembelian" class="btn btn-info" value="Simpan">
                                 <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modalFilter" tabindex="-1" role="dialog" aria-labelledby="modalFilter" aria-hidden="true">
+                <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalFilter">Filter</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form method="POST">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="kode_barang">Kode Barang</label>
+                                    <input type="text" class="form-control" id="kode_barang" name="kode_barang" placeholder="Kode Barang">
+                                </div>
+                                <div class="form-group">
+                                    <label for="nama_barang">Nama Barang</label>
+                                    <input type="text" class="form-control" id="nama_barang" name="nama_barang" placeholder="Nama Barang" value="<?= $post_data['nama_barang'] ?>">
+                                </div>
+                                <div class="form-group">
+                                    <label for="kode_supplier">Kode Supplier</label>
+                                    <input type="text" class="form-control" id="kode_supplier" name="kode_supplier" placeholder="Kode Supplier">
+                                </div>
+                                <div class="form-group">
+                                    <label for="nama_supplier">Supplier</label>
+                                    <input type="text" class="form-control" id="nama_supplier" name="nama_supplier" placeholder="Nama Supplier">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <input type="submit" name="filter" id="filter" class="btn btn-warning" value="Cari">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                             </div>
                         </form>
                     </div>
@@ -218,6 +262,10 @@ if (isset($_POST['pembelian'])) {
 <script>
     function tampil(no_faktur) {
         $(`#modalDetail${no_faktur}`).modal('show');
+    }
+
+    function filter() {
+        $(`#modalFilter`).modal('show');
     }
 
     function tambah() {
