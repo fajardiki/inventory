@@ -33,9 +33,9 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" style="display: flex;" href="<?= BASE_URL ?>">
-                    <img src="<?= $BASE_URL . "/assets/img/logo/pngegg.png"; ?>" class="d-inline-block align-top" alt="brand" width="70" height="70" style="border-radius: 50px; border: 3px solid white;">
-                    <span style="font-weight: bold; color: white; padding-left: 15px;">Sistem Inventory Infinity Foam</span>
+                <a class="navbar-brand" style="display: flex; padding: 0px 0px 0px 10px;" href="<?= BASE_URL ?>">
+                    <img src="<?= $BASE_URL . "/assets/img/logo/1671029383121.png"; ?>" class="d-inline-block align-top" alt="brand" width="50" height="50" style="border-radius: 50px;">
+                    <span style="font-weight: bold; color: white; padding-left: 15px; padding-top: 15px;">Sistem Inventory Infinity Foam</span>
                 </a>
             </div>
             <div class="collapse navbar-collapse navbar-right" id="bs-example-navbar-collapse-4">
