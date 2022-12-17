@@ -9,26 +9,33 @@ if (!session_is_login()) {
 
 $title = "Penjualan";
 
-$penjualan = db_list_penjualan();
+// $penjualan = db_list_penjualan();
 // $penjualan = db_get('penjualan');
 $message = session_flash('message');
 $error = session_flash('error');
 
 if (isset($_POST['penjualan'])) {
-
-    $data = [
-        'no_transaksi' => $_POST['no_transaksi'],
-        'tgl_transaksi' => $_POST['tgl_transaksi'],
-        'username' => session_get_username()
-    ];
-
-    $result = db_insert('penjualan', $data);
-    if ($result) {
-        session_flash('message', 'Data berhasil ditambahkan');
+    if (empty($_POST['no_transaksi']) && empty($_POST['tgl_transaksi'])) {
+        session_flash('error', 'Data gagal ditambahkan, No Transaksi dan Tanggal kosong');
     } else {
-        throw new Exception('Data gagal ditambahkan');
+        $data = [
+            'no_transaksi' => $_POST['no_transaksi'],
+            'tgl_transaksi' => $_POST['tgl_transaksi'],
+            'username' => session_get_username()
+        ];
+
+        $result = db_insert('penjualan', $data);
+        if ($result) {
+            session_flash('message', 'Data berhasil ditambahkan');
+        } else {
+            throw new Exception('Data gagal ditambahkan');
+        }
     }
     header('Location: index.php');
+} elseif (isset($_POST['filter'])) {
+    $penjualan = db_list_penjualan($_POST['jenis_laporan'], $_POST['kode_barang'], $_POST['nama_barang']);
+} else {
+    $penjualan = db_list_penjualan();
 }
 ?>
 
@@ -48,8 +55,49 @@ if (isset($_POST['penjualan'])) {
                 <p><a href="#" class="btn btn-primary" onclick="tambah()">Tambah</a></p>
             <?php } ?>
             <?php if (!session_is_admin()) { ?>
-                <p><a href="#" class="btn btn-warning" onclick="print()">Report</a></p>
+                <div class="pull-right" style="margin-bottom: 20px;">
+                    <a href="#" class="btn btn-warning" onclick="print()">Report</a>
+                    <button class="btn btn-default" onclick="filter()"><i class="fa fa-search"></i></button>
+                </div>
             <?php } ?>
+            <div class="modal fade" id="modalFilter" tabindex="-1" role="dialog" aria-labelledby="modalFilter" aria-hidden="true">
+                <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalFilter">Filter</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form method="POST">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="kode_barang">Jenis Laporan</label>
+                                    <select class="form-control" name="jenis_laporan" id="jenis_laporan">
+                                        <option selected></option>
+                                        <option value="harian">Harian</option>
+                                        <option value="mingguan">Mingguan</option>
+                                        <option value="bulanan">Bulanan</option>
+                                        <option value="tahunan">Tahunan</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kode_barang">Kode Barang</label>
+                                    <input type="text" class="form-control" id="kode_barang" name="kode_barang" placeholder="Kode Barang" value="<?= isset($_POST['kode_barang']) ? $_POST['kode_barang'] : null ?>">
+                                </div>
+                                <div class="form-group">
+                                    <label for="nama_barang">Nama Barang</label>
+                                    <input type="text" class="form-control" id="nama_barang" name="nama_barang" placeholder="Nama Barang" value="<?= isset($_POST['nama_barang']) ? $_POST['nama_barang'] : null ?>">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <input type="submit" name="filter" id="filter" class="btn btn-warning" value="Cari">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
             <div class="modal fade" id="modalTambah" tabindex="-1" role="dialog" aria-labelledby="modalTambah" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -60,7 +108,7 @@ if (isset($_POST['penjualan'])) {
                             </button>
                         </div>
                         <form method="POST">
-                        <div class="modal-body">
+                            <div class="modal-body">
                                 <div class="form-group">
                                     <label for="no_transaksi">No Transaksi</label>
                                     <input type="text" class="form-control" id="no_transaksi" name="no_transaksi" placeholder="No Transaksi">
@@ -139,8 +187,12 @@ if (isset($_POST['penjualan'])) {
             <table class="table" id="table">
                 <thead>
                     <tr>
-                        <th>No</th>
-                        <th>No Transaksi</th>
+                        <th style="width: 30px;">No</th>
+                        <?php if (empty($_POST['jenis_laporan'])) : ?>
+                            <th>No Transaksi</th>
+                        <?php else : ?>
+                            <th><?= ucfirst($_POST['jenis_laporan']) ?></th>
+                        <?php endif; ?>
                         <th>Tanggal</th>
                         <th>Total</th>
                         <th>Aksi</th>
@@ -150,7 +202,11 @@ if (isset($_POST['penjualan'])) {
                     <?php foreach ($penjualan as $key => $value) : ?>
                         <tr>
                             <td><?= $key + 1 ?></td>
-                            <td><?= $value['no_transaksi'] ?></td>
+                            <?php if (empty($_POST['jenis_laporan'])) : ?>
+                                <td><?= $value['no_transaksi'] ?></td>
+                            <?php else : ?>
+                                <td><?= $value[$_POST['jenis_laporan']] ?></td>
+                            <?php endif; ?>
                             <td><?= $value['tgl_transaksi'] ?></td>
                             <td><?= number_format($value['total'], 0, ',', '.') ?></td>
                             <td><a href="#" class="btn btn-info" onclick="tampil('<?= $value['no_transaksi'] ?>')">Lihat</a>
@@ -190,7 +246,11 @@ if (isset($_POST['penjualan'])) {
                     <thead>
                         <tr>
                             <th style="width: 50px;">No</th>
-                            <th style="width: 130px;">No Transaksi</th>
+                            <?php if (empty($_POST['jenis_laporan'])) : ?>
+                                <th style="width: 130px;">No Transaksi</th>
+                            <?php else : ?>
+                                <th style="width: 130px;"><?= ucfirst($_POST['jenis_laporan']) ?></th>
+                            <?php endif; ?>
                             <th style="width: 100px;">Tanggal</th>
                             <th>Barang</th>
                             <th style="width: 120px;">Total</th>
@@ -200,7 +260,11 @@ if (isset($_POST['penjualan'])) {
                         <?php foreach ($penjualan as $key => $value) : ?>
                             <tr>
                                 <td style="text-align: center;"><?= $key + 1 ?>. </td>
-                                <td><?= $value['no_transaksi'] ?></td>
+                                <?php if (empty($_POST['jenis_laporan'])) : ?>
+                                    <td><?= $value['no_transaksi'] ?></td>
+                                <?php else : ?>
+                                    <td><?= $value[$_POST['jenis_laporan']] ?></td>
+                                <?php endif; ?>
                                 <td><?= date_format(date_create($value['tgl_transaksi']), 'd-m-Y') ?></td>
                                 <td><?= $value['barang'] ?></td>
                                 <td>Rp <?= number_format($value['total'], 0, ',', '.') ?></td>
@@ -215,6 +279,10 @@ if (isset($_POST['penjualan'])) {
 <script>
     function tampil(no_transaksi) {
         $(`#modalDetail${no_transaksi}`).modal('show');
+    }
+
+    function filter() {
+        $(`#modalFilter`).modal('show');
     }
 
     function tambah() {

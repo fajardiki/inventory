@@ -24,73 +24,81 @@ if (!$pembelian) {
 }
 
 if (isset($_POST['tambah'])) {
-    $kode_brg = $_POST['kode_brg'];
-    $kode_sup = $_POST['kode_sup'];
-    $jumlah = $_POST['jumlah'];
-    $barang = db_get_one('barang', "kode_brg='$kode_brg'");
-    $total = $jumlah * $barang['harga'];
-    $data = [
-        'no_faktur' => $no_faktur,
-        'kode_brg' => $kode_brg,
-        'kode_sup' => $kode_sup,
-        'jumlah' => $jumlah,
-        'total' => $total
-    ];
-    $result = db_insert('pembelian_barang', $data);
-    // insert jumlah ke table pembelian
-    $jumlah_beli_barang = db_get('pembelian_barang', "no_faktur='$no_faktur'");
-    $sum_total = array_sum(array_column($jumlah_beli_barang, 'total'));
-    $result3 = db_update('pembelian', [
-        'total' => $sum_total
-    ], "no_faktur='$no_faktur'");
-
-    if ($result && $result3) {
-        $insert_stok = db_insert_stok_barang([
-            "kode_barang" => $kode_brg, 
-            "no_faktur" => $no_faktur, 
-            "no_transaksi" => null, 
-            "id_detail" => $result, 
-            "jumlah" => $jumlah
-        ]);
-        session_flash('message', 'Data berhasil ditambahkan');
+    if (empty($_POST['jumlah'])) {
+        session_flash('error', 'Data gagal ditambahkan, Jumlah tidak boleh kosong');
     } else {
-        session_flash('error', 'Data gagal ditambahkan');
+        $kode_brg = $_POST['kode_brg'];
+        $kode_sup = $_POST['kode_sup'];
+        $jumlah = $_POST['jumlah'];
+        $barang = db_get_one('barang', "kode_brg='$kode_brg'");
+        $total = $jumlah * $barang['harga'];
+        $data = [
+            'no_faktur' => $no_faktur,
+            'kode_brg' => $kode_brg,
+            'kode_sup' => $kode_sup,
+            'jumlah' => $jumlah,
+            'total' => $total
+        ];
+        $result = db_insert_detail('pembelian_barang', $data);
+        // insert jumlah ke table pembelian
+        $jumlah_beli_barang = db_get('pembelian_barang', "no_faktur='$no_faktur'");
+        $sum_total = array_sum(array_column($jumlah_beli_barang, 'total'));
+        $result3 = db_update('pembelian', [
+            'total' => $sum_total
+        ], "no_faktur='$no_faktur'");
+
+        if ($result && $result3) {
+            $insert_stok = db_insert_stok_barang([
+                "kode_barang" => $kode_brg, 
+                "no_faktur" => $no_faktur, 
+                "no_transaksi" => null, 
+                "id_detail" => $result, 
+                "jumlah" => $jumlah
+            ]);
+            session_flash('message', 'Data berhasil ditambahkan');
+        } else {
+            session_flash('error', 'Data gagal ditambahkan');
+        }
     }
 }
 
 if (isset($_POST['edit'])) {
-    $id_detail = $_POST['id_detail'];
-    $old_detail = db_get_one('pembelian_barang', "id_detail=$id_detail");
-    $kode_brg = $_POST['kode_brg'];
-    $kode_sup = $_POST['kode_sup'];
-    $jumlah = $_POST['jumlah'];
-    $barang = db_get_one('barang', "kode_brg='$kode_brg'");
-    $total = $jumlah * $barang['harga'];
-    $data = [
-        'kode_brg' => $kode_brg,
-        'kode_sup' => $kode_sup,
-        'jumlah' => $jumlah,
-        'total' => $total
-    ];
-    $result = db_update('pembelian_barang', $data, "id_detail=$id_detail");
-    // insert jumlah ke table pembelian
-    $jumlah_beli_barang = db_get('pembelian_barang', "no_faktur='$no_faktur'");
-    $sum_total = array_sum(array_column($jumlah_beli_barang, 'total'));
-    $result3 = db_update('pembelian', [
-        'total' => $sum_total
-    ], "no_faktur='$no_faktur'");
-
-    if ($result && $result3) {
-        $insert_stok = db_insert_stok_barang([
-            "kode_barang" => $kode_brg, 
-            "no_faktur" => $no_faktur, 
-            "no_transaksi" => null, 
-            "id_detail" => $id_detail, 
-            "jumlah" => $jumlah
-        ]);
-        session_flash('message', 'Data berhasil diubah');
+    if (empty($_POST['jumlah'])) {
+        session_flash('error', 'Data gagal ditambahkan, Jumlah tidak boleh kosong');
     } else {
-        session_flash('error', 'Data gagal diubah');
+        $id_detail = $_POST['id_detail'];
+        $old_detail = db_get_one('pembelian_barang', "id_detail=$id_detail");
+        $kode_brg = $_POST['kode_brg'];
+        $kode_sup = $_POST['kode_sup'];
+        $jumlah = $_POST['jumlah'];
+        $barang = db_get_one('barang', "kode_brg='$kode_brg'");
+        $total = $jumlah * $barang['harga'];
+        $data = [
+            'kode_brg' => $kode_brg,
+            'kode_sup' => $kode_sup,
+            'jumlah' => $jumlah,
+            'total' => $total
+        ];
+        $result = db_update('pembelian_barang', $data, "id_detail=$id_detail");
+        // insert jumlah ke table pembelian
+        $jumlah_beli_barang = db_get('pembelian_barang', "no_faktur='$no_faktur'");
+        $sum_total = array_sum(array_column($jumlah_beli_barang, 'total'));
+        $result3 = db_update('pembelian', [
+            'total' => $sum_total
+        ], "no_faktur='$no_faktur'");
+
+        if ($result && $result3) {
+            $insert_stok = db_insert_stok_barang([
+                "kode_barang" => $kode_brg, 
+                "no_faktur" => $no_faktur, 
+                "no_transaksi" => null, 
+                "id_detail" => $id_detail, 
+                "jumlah" => $jumlah
+            ]);
+            session_flash('message', 'Data berhasil diubah');
+        } else {
+            session_flash('error', 'Data gagal diubah');
+        }
     }
 }
 

@@ -9,7 +9,25 @@ if (!session_is_login()) {
 
 $title = "Barang";
 
-$barang = db_get('barang');
+// $barang = db_get('barang');
+$sql = mysqli_query($GLOBALS['koneksi'] ,"
+    SELECT 
+        barang.kode_brg,
+        barang.gambar,
+        barang.nama_brg,
+        COALESCE(SUM(a.jumlah), 0) AS stok,
+        barang.stok_ambang, 
+        barang.kode_rak 
+    FROM
+        stokbarang a 
+        RIGHT JOIN barang 
+            ON barang.kode_brg = a.kode_brg 
+    WHERE 1 
+    GROUP BY a.kode_brg 
+    ORDER BY barang.nama_brg 
+");
+$barang = mysqli_fetch_all($sql, MYSQLI_ASSOC);
+
 $rak = db_get('rak');
 $message = session_flash('message');
 $error = session_flash('error');

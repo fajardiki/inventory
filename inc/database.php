@@ -32,6 +32,15 @@ function db_insert($table, $data)
     $sql .= implode(', ', array_map(function ($key) use ($data) {
         return "$key = '$data[$key]'";
     }, array_keys($data)));
+    return mysqli_query($GLOBALS['koneksi'], $sql);
+}
+
+function db_insert_detail($table, $data)
+{
+    $sql = "INSERT INTO $table SET ";
+    $sql .= implode(', ', array_map(function ($key) use ($data) {
+        return "$key = '$data[$key]'";
+    }, array_keys($data)));
     mysqli_query($GLOBALS['koneksi'], $sql);
     return mysqli_insert_id($GLOBALS['koneksi']);
 }
@@ -52,7 +61,8 @@ function db_delete($table, $where)
     return mysqli_query($GLOBALS['koneksi'], $sql);
 }
 
-function db_insert_stok_barang($data) {
+function db_insert_stok_barang($data)
+{
     $kode_barang = $data['kode_barang'];
     $no_faktur = $data['no_faktur'];
     $no_transaksi = $data['no_transaksi'];
@@ -70,38 +80,95 @@ function db_insert_stok_barang($data) {
     return mysqli_query($GLOBALS['koneksi'], $sql);
 }
 
-function db_list_penjualan()
-{
-    $sql = "
-        SELECT 
-            a.*,
-            COALESCE(SUM(b.total), 0) AS total, 
-            GROUP_CONCAT(barang.nama_brg SEPARATOR ', ') AS barang
-        FROM
-            penjualan a 
-            LEFT JOIN penjualan_barang b 
-                ON b.no_transaksi = a.no_transaksi 
-            LEFT JOIN barang 
-                ON barang.kode_brg = b.kode_brg
-        GROUP BY a.no_transaksi  
-    ";
-
-    $result = mysqli_query($GLOBALS['koneksi'], $sql);
-    $data = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    return $data;
-}
-
-function db_list_pembelian($kode_barang = null, $nama_barang = null, $kode_supplier = null, $nama_supplier = null)
+function db_list_penjualan($jenis_laporan = null, $kode_barang = null, $nama_barang = null)
 {
     $where = null;
-    // echo $nama_supplier;
+    $groupBy = null;
+
+    if ($jenis_laporan == "harian") {
+        $groupBy = "GROUP BY harian";
+    } elseif ($jenis_laporan == "mingguan") {
+        $groupBy = "GROUP BY mingguan";
+    } elseif ($jenis_laporan == "bulanan") {
+        $groupBy = "GROUP BY bulanan";
+    } elseif ($jenis_laporan == "tahunan") {
+        $groupBy = "GROUP BY tahunan";
+    } else {
+        $groupBy = "GROUP BY a.no_transaksi";
+    }
 
     if ($kode_barang) {
         $where .= "AND b.kode_brg LIKE '%$kode_barang%' ";
     }
 
     if ($nama_barang) {
-        $where .= "AND barang.nama_brg LIKE '%$nama_barang%' ";
+        $nama_barang = strtolower($nama_barang);
+        $where .= "AND LOWER(barang.nama_brg) LIKE '%$nama_barang%' ";
+    }
+
+    $sql = "
+        SELECT 
+            a.*,
+            COALESCE(SUM(b.total), 0) AS total, 
+            GROUP_CONCAT(barang.nama_brg SEPARATOR ', ') AS barang,
+            a.tgl_transaksi AS harian, 
+            WEEK(a.tgl_transaksi) AS mingguan, 
+            DATE_FORMAT(a.tgl_transaksi, '%Y-%m') AS bulanan, 
+            YEAR(a.tgl_transaksi) AS tahunan
+        FROM
+            penjualan a 
+            LEFT JOIN penjualan_barang b 
+                ON b.no_transaksi = a.no_transaksi 
+            LEFT JOIN barang 
+                ON barang.kode_brg = b.kode_brg
+        WHERE 1
+            $where 
+        $groupBy 
+    ";
+
+    // $sql = "
+    //     SELECT 
+    //         a.*,
+    //         COALESCE(SUM(b.total), 0) AS total, 
+    //         GROUP_CONCAT(barang.nama_brg SEPARATOR ', ') AS barang
+    //     FROM
+    //         penjualan a 
+    //         LEFT JOIN penjualan_barang b 
+    //             ON b.no_transaksi = a.no_transaksi 
+    //         LEFT JOIN barang 
+    //             ON barang.kode_brg = b.kode_brg
+    //     GROUP BY a.no_transaksi  
+    // ";
+
+    $result = mysqli_query($GLOBALS['koneksi'], $sql);
+    $data = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    return $data;
+}
+
+function db_list_pembelian($jenis_laporan = null, $kode_barang = null, $nama_barang = null, $kode_supplier = null, $nama_supplier = null)
+{
+    $where = null;
+    $groupBy = null;
+
+    if ($jenis_laporan == "harian") {
+        $groupBy = "GROUP BY harian";
+    } elseif ($jenis_laporan == "mingguan") {
+        $groupBy = "GROUP BY mingguan";
+    } elseif ($jenis_laporan == "bulanan") {
+        $groupBy = "GROUP BY bulanan";
+    } elseif ($jenis_laporan == "tahunan") {
+        $groupBy = "GROUP BY tahunan";
+    } else {
+        $groupBy = "GROUP BY a.no_faktur";
+    }
+
+    if ($kode_barang) {
+        $where .= "AND b.kode_brg LIKE '%$kode_barang%' ";
+    }
+
+    if ($nama_barang) {
+        $nama_barang = strtolower($nama_barang);
+        $where .= "AND LOWER(barang.nama_brg) LIKE '%$nama_barang%' ";
     }
 
     if ($kode_supplier) {
@@ -109,27 +176,49 @@ function db_list_pembelian($kode_barang = null, $nama_barang = null, $kode_suppl
     }
 
     if ($nama_supplier) {
+        $nama_supplier = strtolower($nama_supplier);
         $where .= "AND supplier.nama_sup LIKE '%$nama_supplier%' ";
     }
 
     $sql = "
-        SELECT 
-            a.*,
-            COALESCE(SUM(b.total), 0) AS total, 
-            GROUP_CONCAT(barang.nama_brg SEPARATOR ', ') AS barang
-        FROM
-            pembelian a
-            LEFT JOIN pembelian_barang b
-                ON b.no_faktur = a.no_faktur 
-            LEFT JOIN barang 
-                ON barang.kode_brg = b.kode_brg 
-            LEFT JOIN supplier 
-                ON supplier.kode_sup = b.kode_sup
-        WHERE 1 
-            $where 
-        GROUP BY a.no_faktur 
+    SELECT 
+        a.*,
+        GROUP_CONCAT(barang.nama_brg SEPARATOR ', ') AS barang,
+        COALESCE(SUM(b.total), 0) AS total,
+        a.tgl_transaksi AS harian, 
+        WEEK(a.tgl_transaksi) AS mingguan, 
+        DATE_FORMAT(a.tgl_transaksi, '%Y-%m') AS bulanan, 
+        YEAR(a.tgl_transaksi) AS tahunan
+    FROM
+        pembelian a 
+        LEFT JOIN pembelian_barang b 
+            ON b.no_faktur = a.no_faktur 
+        LEFT JOIN barang 
+            ON barang.kode_brg = b.kode_brg 
+        LEFT JOIN supplier 
+            ON supplier.kode_sup = b.kode_sup 
+    WHERE 1 
+        $where
+    $groupBy
     ";
-    
+
+    // $sql = "
+    //     SELECT 
+    //         a.*,
+    //         COALESCE(SUM(b.total), 0) AS total, 
+    //         GROUP_CONCAT(barang.nama_brg SEPARATOR ', ') AS barang
+    //     FROM
+    //         pembelian a
+    //         LEFT JOIN pembelian_barang b
+    //             ON b.no_faktur = a.no_faktur 
+    //         LEFT JOIN barang 
+    //             ON barang.kode_brg = b.kode_brg 
+    //         LEFT JOIN supplier 
+    //             ON supplier.kode_sup = b.kode_sup
+    //     WHERE 1 
+    //         $where 
+    //     GROUP BY a.no_faktur 
+    // ";
 
     $result = mysqli_query($GLOBALS['koneksi'], $sql);
     $data = mysqli_fetch_all($result, MYSQLI_ASSOC);

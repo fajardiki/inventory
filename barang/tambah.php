@@ -15,12 +15,18 @@ if (isset($_POST['submit'])) {
     $nama_brg = $_POST['nama_brg'];
     $ukuran = $_POST['ukuran'];
     $harga = $_POST['harga'];
-    $stok = $_POST['stok'];
     $stok_ambang = $_POST['stok_ambang'];
     $kode_rak = $_POST['kode_rak'];
-    $gambar = $_POST['gambar'];
 
     try {
+        $data_insert = [
+            'kode_brg' => $kode_brg,
+            'nama_brg' => $nama_brg,
+            'ukuran' => $ukuran,
+            'harga' => $harga,
+            'stok_ambang' => $stok_ambang,
+            'kode_rak' => $kode_rak
+        ];
         // upload_gambar
         if ($_FILES['gambar']['error'] == 0) {
             $nama = $_FILES['gambar']['name'];
@@ -32,6 +38,9 @@ if (isset($_POST['submit'])) {
             move_uploaded_file($file_tmp, '../assets/img/' . $nama);
             if (file_exists('../assets/img/' . $nama)) {
                 $gambar = $nama;
+                if (!empty($gambar)) {
+                    $data_insert['gambar'] = $gambar;
+                }
             }
         }
 
@@ -39,16 +48,7 @@ if (isset($_POST['submit'])) {
         if ($barang) {
             throw new Exception('Kode barang sudah digunakan');
         }
-        $result = db_insert('barang', [
-            'kode_brg' => $kode_brg,
-            'nama_brg' => $nama_brg,
-            'ukuran' => $ukuran,
-            'harga' => $harga,
-            'stok' => $stok,
-            'stok_ambang' => $stok_ambang,
-            'kode_rak' => $kode_rak,
-            'gambar' => $gambar,
-        ]);
+        $result = db_insert('barang', $data_insert);
         if ($result) {
             session_flash('message', 'Data berhasil ditambahkan');
             header('Location: index.php');

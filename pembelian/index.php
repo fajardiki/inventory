@@ -15,20 +15,26 @@ $error = session_flash('error');
 $post_data = $_POST;
 
 if (isset($post_data['pembelian'])) {
-    $data = [
-        'no_faktur' => $post_data['no_faktur'],
-        'tgl_transaksi' => $post_data['tgl_transaksi'],
-        'username' => session_get_username()
-    ];
-    $result = db_insert('pembelian', $data);
-    if ($result) {
-        session_flash('message', 'Data berhasil ditambahkan');
+    if (empty($post_data['no_faktur']) && empty($post_data['tgl_transaksi'])) {
+        session_flash('error', 'Data gagal ditambahkan, No Faktur dan Tanggal kosong');
+        // throw new Exception('No Faktur dan Tanggal kosong !');
     } else {
-        throw new Exception('Data gagal ditambahkan');
+        $data = [
+            'no_faktur' => $post_data['no_faktur'],
+            'tgl_transaksi' => $post_data['tgl_transaksi'],
+            'username' => session_get_username()
+        ];
+        $result = db_insert('pembelian', $data);
+        if ($result) {
+            session_flash('message', 'Data berhasil ditambahkan');
+        } else {
+            session_flash('error', 'Data gagal ditambahkan');
+            // throw new Exception('Data gagal ditambahkan');
+        }
     }
     header('Location: index.php');
 } elseif (isset($post_data['filter'])) {
-    $pembelian = db_list_pembelian($post_data['kode_barang'], $post_data['nama_barang'], $post_data['kode_supplier'], $post_data['nama_supplier']);
+    $pembelian = db_list_pembelian($post_data['jenis_laporan'], $post_data['kode_barang'], $post_data['nama_barang'], $post_data['kode_supplier'], $post_data['nama_supplier']);
 } else {
     $pembelian = db_list_pembelian();
 }
@@ -98,20 +104,30 @@ if (isset($post_data['pembelian'])) {
                         <form method="POST">
                             <div class="modal-body">
                                 <div class="form-group">
+                                    <label for="kode_barang">Jenis Laporan</label>
+                                    <select class="form-control" name="jenis_laporan" id="jenis_laporan">
+                                        <option selected></option>
+                                        <option value="harian">Harian</option>
+                                        <option value="mingguan">Mingguan</option>
+                                        <option value="bulanan">Bulanan</option>
+                                        <option value="tahunan">Tahunan</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
                                     <label for="kode_barang">Kode Barang</label>
-                                    <input type="text" class="form-control" id="kode_barang" name="kode_barang" placeholder="Kode Barang">
+                                    <input type="text" class="form-control" id="kode_barang" name="kode_barang" placeholder="Kode Barang" value="<?= isset($post_data['kode_barang']) ? $post_data['kode_barang'] : null ?>">
                                 </div>
                                 <div class="form-group">
                                     <label for="nama_barang">Nama Barang</label>
-                                    <input type="text" class="form-control" id="nama_barang" name="nama_barang" placeholder="Nama Barang" value="<?= $post_data['nama_barang'] ?>">
+                                    <input type="text" class="form-control" id="nama_barang" name="nama_barang" placeholder="Nama Barang" value="<?= isset($post_data['nama_barang']) ? $post_data['nama_barang'] : null ?>">
                                 </div>
                                 <div class="form-group">
                                     <label for="kode_supplier">Kode Supplier</label>
-                                    <input type="text" class="form-control" id="kode_supplier" name="kode_supplier" placeholder="Kode Supplier">
+                                    <input type="text" class="form-control" id="kode_supplier" name="kode_supplier" placeholder="Kode Supplier" value="<?= isset($post_data['kode_supplier']) ? $post_data['kode_supplier'] : null ?>">
                                 </div>
                                 <div class="form-group">
                                     <label for="nama_supplier">Supplier</label>
-                                    <input type="text" class="form-control" id="nama_supplier" name="nama_supplier" placeholder="Nama Supplier">
+                                    <input type="text" class="form-control" id="nama_supplier" name="nama_supplier" placeholder="Nama Supplier" value="<?= isset($post_data['nama_supplier']) ? $post_data['nama_supplier'] : null ?>">
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -186,8 +202,12 @@ if (isset($post_data['pembelian'])) {
             <table class="table" id="table">
                 <thead>
                     <tr>
-                        <th>No</th>
-                        <th>No Faktur</th>
+                        <th style="width: 30px;">No</th>
+                        <?php if (empty($post_data['jenis_laporan'])) : ?>
+                            <th>No Faktur</th>
+                        <?php else : ?>
+                            <th><?= ucfirst($post_data['jenis_laporan']) ?></th>
+                        <?php endif; ?>
                         <th>Tanggal</th>
                         <th>Total</th>
                         <th>Aksi</th>
@@ -197,7 +217,11 @@ if (isset($post_data['pembelian'])) {
                     <?php foreach ($pembelian as $key => $value) : ?>
                         <tr>
                             <td><?= $key + 1 ?></td>
-                            <td><?= $value['no_faktur'] ?></td>
+                            <?php if (empty($post_data['jenis_laporan'])) : ?>
+                                <td><?= $value['no_faktur'] ?></td>
+                            <?php else : ?>
+                                <td><?= $value[$post_data['jenis_laporan']] ?></td>
+                            <?php endif; ?>
                             <td><?= $value['tgl_transaksi'] ?></td>
                             <td>Rp<?= number_format($value['total'], 0, ',', '.') ?></td>
                             <td><a href="#" class="btn btn-info" onclick="tampil('<?= $value['no_faktur'] ?>')">Lihat</a>
@@ -237,7 +261,11 @@ if (isset($post_data['pembelian'])) {
                     <thead>
                         <tr>
                             <th style="width: 50px;">No</th>
-                            <th style="width: 130px;">No Faktur</th>
+                            <?php if (empty($post_data['jenis_laporan'])) : ?>
+                                <th style="width: 130px;">No Faktur</th>
+                            <?php else : ?>
+                                <th style="width: 130px;"><?= ucfirst($post_data['jenis_laporan']) ?></th>
+                            <?php endif; ?>
                             <th style="width: 100px;">Tanggal</th>
                             <th>Barang</th>
                             <th style="width: 120px;">Total</th>
@@ -247,7 +275,11 @@ if (isset($post_data['pembelian'])) {
                         <?php foreach ($pembelian as $key => $value) : ?>
                             <tr>
                                 <td style="text-align: center;"><?= $key + 1 ?>. </td>
-                                <td><?= $value['no_faktur'] ?></td>
+                                <?php if (empty($post_data['jenis_laporan'])) : ?>
+                                    <td><?= $value['no_faktur'] ?></td>
+                                <?php else : ?>
+                                    <td><?= $value[$post_data['jenis_laporan']] ?></td>
+                                <?php endif; ?>
                                 <td><?= date_format(date_create($value['tgl_transaksi']), 'd-m-Y') ?></td>
                                 <td><?= $value['barang'] ?></td>
                                 <td>Rp <?= number_format($value['total'], 0, ',', '.') ?></td>
@@ -273,6 +305,7 @@ if (isset($post_data['pembelian'])) {
     }
 
     function hapus(no_faktur) {
+        console.log(no_faktur);
         $(`#modalHapus${no_faktur}`).modal('show');
     }
 </script>
