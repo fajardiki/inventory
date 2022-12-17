@@ -48,11 +48,11 @@ if (isset($_POST['tambah'])) {
 
         if ($result && $result3) {
             $insert_stok = db_insert_stok_barang([
-                "kode_barang" => $kode_brg, 
-                "no_faktur" => null, 
-                "no_transaksi" => $no_transaksi, 
+                "kode_barang" => $kode_brg,
+                "no_faktur" => null,
+                "no_transaksi" => $no_transaksi,
                 "nomorstokopname" => null,
-                "id_detail" => $result, 
+                "id_detail" => $result,
                 "jumlah" => $jumlah * -1
             ]);
             session_flash('message', 'Data berhasil ditambahkan');
@@ -88,11 +88,11 @@ if (isset($_POST['edit'])) {
 
         if ($result && $result3) {
             $insert_stok = db_insert_stok_barang([
-                "kode_barang" => $kode_brg, 
-                "no_faktur" => null, 
-                "no_transaksi" => $no_transaksi, 
+                "kode_barang" => $kode_brg,
+                "no_faktur" => null,
+                "no_transaksi" => $no_transaksi,
                 "nomorstokopname" => null,
-                "id_detail" => $id_detail, 
+                "id_detail" => $id_detail,
                 "jumlah" => $jumlah * -1
             ]);
             session_flash('message', 'Data berhasil diubah');
@@ -161,7 +161,7 @@ $error = session_flash('error');
                                 <div class="modal-body">
                                     <div class="form-group">
                                         <label for="kode_brg">Barang</label>
-                                        <select name="kode_brg" class="form-control">
+                                        <select name="kode_brg" id="kode_brg" class="form-control">
                                             <?php foreach ($semua_barang as $barang) { ?>
                                                 <option value="<?= $barang['kode_brg'] ?>"><?= $barang['nama_brg'] ?></option>
                                             <?php } ?>
@@ -169,7 +169,7 @@ $error = session_flash('error');
                                     </div>
                                     <div class="form-group">
                                         <label for="jumlah">Jumlah</label>
-                                        <input type="number" class="form-control" name="jumlah" min="0" onkeypress="input_number(event)">
+                                        <input type="number" class="form-control" name="jumlah" id="jumlah" min="0" onkeypress="input_number(event)" onkeyup="cekStok(this)">
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -292,6 +292,35 @@ $error = session_flash('error');
 
     function hapus(id_detail) {
         $(`#modalHapus${id_detail}`).modal('show');
+    }
+
+    function cekStok(item) {
+        let kode_brg = $('#kode_brg').val();
+
+        $.ajax({
+            url: 'cek_stok.php',
+            dataType: 'json',
+            data: {
+                'kode_brg': kode_brg,
+                'jumlah': item.value
+            },
+            success: function(response) {
+                // console.log(response);
+                if (!response.success) {
+                    Toastify({
+                        text: "Stok tidak cukup",
+                        close: true,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "red",
+                        color: "white",
+                        stopOnFocus: true,
+                    }).showToast();
+
+                    $('#jumlah').val(0);
+                }
+            }
+        })
     }
 </script>
 <?php include '../layout/footer.php'; ?>
