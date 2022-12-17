@@ -210,7 +210,7 @@ if (isset($post_data['pembelian'])) {
                         <?php endif; ?>
                         <th>Tanggal</th>
                         <th>Total</th>
-                        <th>Aksi</th>
+                        <th style="width: 200px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>

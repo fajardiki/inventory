@@ -51,7 +51,7 @@ if (isset($_POST['tambah'])) {
                 "kode_barang" => $kode_brg,
                 "no_faktur" => null,
                 "no_transaksi" => $no_transaksi,
-                "nomorstokopname" => null,
+                "nomorstokopname" => 0,
                 "id_detail" => $result,
                 "jumlah" => $jumlah * -1
             ]);
@@ -91,10 +91,12 @@ if (isset($_POST['edit'])) {
                 "kode_barang" => $kode_brg,
                 "no_faktur" => null,
                 "no_transaksi" => $no_transaksi,
-                "nomorstokopname" => null,
+                "nomorstokopname" => 0,
                 "id_detail" => $id_detail,
                 "jumlah" => $jumlah * -1
             ]);
+            // echo $insert_stok;
+            // exit;
             session_flash('message', 'Data berhasil diubah');
         } else {
             session_flash('error', 'Data gagal diubah');
