@@ -37,7 +37,7 @@ CREATE TABLE `barang` (
 
 /*Data for the table `barang` */
 
-insert  into `barang`(`kode_brg`,`nama_brg`,`ukuran`,`harga`,`stok`,`stok_ambang`,`kode_rak`,`gambar`) values ('AB002','Box Styrofoam Tuna','37x23x16cm',15000,107,15,'RA1','Introvert.jpg'),('BX001','Box Styrofoam 2KG','28,5x15,5x16,5 cm',12000,112,20,'RA1','Sendir.jpg'),('ICE450','Ice Gel Thermapack 450gr','-',13500,0,5,'RB1','Sendiri.jpg'),('test_01','test','20X20',12000,50,10,'1','flutter.png');
+insert  into `barang`(`kode_brg`,`nama_brg`,`ukuran`,`harga`,`stok`,`stok_ambang`,`kode_rak`,`gambar`) values ('AB002','Box Styrofoam Tuna','37x23x16cm',15000,0,15,'RA1','Figure_1.png'),('BRG-1','Barang Test !','2x2',145,0,10,'RA1','flutter.png'),('BX001','Box Styrofoam 2KG','28,5x15,5x16,5 cm',12000,0,20,'RA1','Figure_1.png'),('ICE450','Ice Gel Thermapack 450gr','-',13500,0,5,'RB1','461264-reactJS-Facebook-JavaScript-minimalism-artwork-simple_background-748x421.jpg'),('test_01','test','20X20',12000,0,10,'1','wp3082278-github-wallpapers.jpg');
 
 /*Table structure for table `pembelian` */
 
@@ -55,7 +55,7 @@ CREATE TABLE `pembelian` (
 
 /*Data for the table `pembelian` */
 
-insert  into `pembelian`(`no_faktur`,`username`,`tgl_transaksi`,`total`) values ('PT123456789','admin1','2022-11-16',0),('PT80802818031','admin1','2022-12-01',0),('TEST71222','admin1','2022-12-07',0),('xx1','admin1','2022-01-01',0);
+insert  into `pembelian`(`no_faktur`,`username`,`tgl_transaksi`,`total`) values ('PT123456789','admin1','2022-11-16',135000),('PT80802818031','admin1','2022-12-01',2400000),('TEST171222','admin1','2022-12-17',1290000),('TEST181222','admin1','2022-12-18',1303500),('TEST71222','admin1','2022-12-07',150000);
 
 /*Table structure for table `pembelian_barang` */
 
@@ -75,11 +75,11 @@ CREATE TABLE `pembelian_barang` (
   CONSTRAINT `pembelian_barang_ibfk_1` FOREIGN KEY (`no_faktur`) REFERENCES `pembelian` (`no_faktur`),
   CONSTRAINT `pembelian_barang_ibfk_2` FOREIGN KEY (`kode_brg`) REFERENCES `barang` (`kode_brg`),
   CONSTRAINT `pembelian_barang_ibfk_3` FOREIGN KEY (`kode_sup`) REFERENCES `supplier` (`kode_sup`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*Data for the table `pembelian_barang` */
 
-insert  into `pembelian_barang`(`id_detail`,`no_faktur`,`kode_brg`,`kode_sup`,`jumlah`,`total`) values (6,'PT80802818031','BX001','SPT001',200,2400000),(8,'PT123456789','ICE450','SPT001',10,135000),(13,'TEST71222','AB002','SPT001',5,75000),(15,'TEST71222','AB002','SPT001',5,75000);
+insert  into `pembelian_barang`(`id_detail`,`no_faktur`,`kode_brg`,`kode_sup`,`jumlah`,`total`) values (6,'PT80802818031','BX001','SPT001',200,2400000),(8,'PT123456789','ICE450','SPT001',10,135000),(13,'TEST71222','AB002','SPT001',5,75000),(15,'TEST71222','AB002','SPT001',5,75000),(29,'TEST171222','AB002','SPT001',20,300000),(30,'TEST171222','BRG-1','SPT001',20,240000),(31,'TEST171222','BX001','SPT001',20,240000),(32,'TEST171222','ICE450','SPT001',20,270000),(33,'TEST171222','test_01','SPT001',20,240000),(34,'TEST181222','AB002','SPT001',20,300000),(35,'TEST181222','BRG-1','SPT001',20,240000),(36,'TEST181222','BX001','SPT001',20,240000),(37,'TEST181222','ICE450','SPT001',21,283500),(38,'TEST181222','test_01','SPT001',20,240000);
 
 /*Table structure for table `pengguna` */
 
@@ -112,7 +112,7 @@ CREATE TABLE `penjualan` (
 
 /*Data for the table `penjualan` */
 
-insert  into `penjualan`(`no_transaksi`,`username`,`tgl_transaksi`,`total`) values ('AB1213242942','admin1','2022-12-01',0),('TK20220718DFK9N','admin1','2022-07-18',0),('hhhlada121314','admin1','2022-12-01',0);
+insert  into `penjualan`(`no_transaksi`,`username`,`tgl_transaksi`,`total`) values ('AB1213242942','admin1','2022-12-01',351000),('TEST171222','admin1','2022-12-17',2400000),('TK20220718DFK9N','admin1','2022-07-18',187500),('hhhlada121314','admin1','2022-12-01',0),('test','admin1','2022-12-17',0);
 
 /*Table structure for table `penjualan_barang` */
 
@@ -129,11 +129,11 @@ CREATE TABLE `penjualan_barang` (
   KEY `kode_brg` (`kode_brg`),
   CONSTRAINT `penjualan_barang_ibfk_1` FOREIGN KEY (`no_transaksi`) REFERENCES `penjualan` (`no_transaksi`),
   CONSTRAINT `penjualan_barang_ibfk_2` FOREIGN KEY (`kode_brg`) REFERENCES `barang` (`kode_brg`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*Data for the table `penjualan_barang` */
 
-insert  into `penjualan_barang`(`id_detail`,`no_transaksi`,`kode_brg`,`jumlah`,`total`) values (1,'TK20220718DFK9N','BX001',10,0),(2,'TK20220718DFK9N','ICE450',5,0),(10,'AB1213242942','AB002',7,105000),(13,'AB1213242942','ICE450',6,81000),(14,'TK20220718DFK9N','ICE450',2,0),(15,'TK20220718DFK9N','ICE450',2,0),(16,'AB1213242942','ICE450',4,54000);
+insert  into `penjualan_barang`(`id_detail`,`no_transaksi`,`kode_brg`,`jumlah`,`total`) values (1,'TK20220718DFK9N','BX001',10,120000),(2,'TK20220718DFK9N','ICE450',5,67500),(10,'AB1213242942','AB002',7,105000),(13,'AB1213242942','ICE450',6,81000),(19,'AB1213242942','BX001',10,120000),(20,'AB1213242942','AB002',3,45000),(21,'TEST171222','BX001',180,2160000),(22,'TEST171222','test_01',20,240000);
 
 /*Table structure for table `rak` */
 
@@ -148,6 +148,43 @@ CREATE TABLE `rak` (
 /*Data for the table `rak` */
 
 insert  into `rak`(`kode_rak`,`kapasitas`) values ('1',-5),('RA1',200),('RB1',250);
+
+/*Table structure for table `stokbarang` */
+
+DROP TABLE IF EXISTS `stokbarang`;
+
+CREATE TABLE `stokbarang` (
+  `nomor` int(11) NOT NULL AUTO_INCREMENT,
+  `kode_brg` char(20) NOT NULL,
+  `no_faktur` varchar(50) DEFAULT NULL,
+  `no_transaksi` varchar(20) DEFAULT NULL,
+  `nomorstokopname` int(11) DEFAULT NULL,
+  `id_detail` int(11) DEFAULT NULL,
+  `jumlah` int(11) NOT NULL,
+  PRIMARY KEY (`nomor`)
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=latin1;
+
+/*Data for the table `stokbarang` */
+
+insert  into `stokbarang`(`nomor`,`kode_brg`,`no_faktur`,`no_transaksi`,`nomorstokopname`,`id_detail`,`jumlah`) values (8,'ICE450','PT123456789','',NULL,8,10),(12,'BX001','PT80802818031','',NULL,6,200),(13,'AB002','TEST71222','',NULL,13,5),(14,'AB002','TEST71222','',NULL,15,5),(20,'ICE450','','AB1213242942',NULL,13,-6),(21,'BX001','','AB1213242942',NULL,19,-10),(22,'BX001','','TK20220718DFK9N',NULL,1,-10),(23,'ICE450','','TK20220718DFK9N',NULL,2,-5),(26,'AB002','','AB1213242942',NULL,20,-3),(31,'test_01','TEST171222','',NULL,1,20),(33,'AB002','TEST171222','',NULL,29,20),(34,'BRG-1','TEST171222','',NULL,30,20),(35,'BX001','TEST171222','',NULL,31,20),(36,'test_01','TEST171222','',NULL,33,20),(37,'ICE450','TEST171222','',NULL,32,20),(38,'AB002','TEST181222','',NULL,34,20),(39,'BRG-1','TEST181222','',NULL,35,20),(40,'BX001','TEST181222','',NULL,36,20),(42,'test_01','TEST181222','',NULL,38,20),(43,'BX001','','TEST171222',NULL,21,-180),(44,'test_01','','TEST171222',NULL,22,-20),(45,'ICE450','TEST181222','',NULL,37,21),(51,'AB002','','AB1213242942',NULL,10,-7),(53,'AB002','','',11,0,-20);
+
+/*Table structure for table `stokopname` */
+
+DROP TABLE IF EXISTS `stokopname`;
+
+CREATE TABLE `stokopname` (
+  `nomor` int(11) NOT NULL AUTO_INCREMENT,
+  `kode` varchar(10) NOT NULL,
+  `kode_brg` char(20) NOT NULL,
+  `jumlah_stok` int(11) NOT NULL,
+  `jumlah_stok_opname` int(11) NOT NULL,
+  `jumlah_selisih` int(11) NOT NULL,
+  PRIMARY KEY (`nomor`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+
+/*Data for the table `stokopname` */
+
+insert  into `stokopname`(`nomor`,`kode`,`kode_brg`,`jumlah_stok`,`jumlah_stok_opname`,`jumlah_selisih`) values (11,'OPN1','AB002',40,20,-20);
 
 /*Table structure for table `supplier` */
 
