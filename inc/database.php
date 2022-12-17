@@ -66,6 +66,7 @@ function db_insert_stok_barang($data)
     $kode_barang = $data['kode_barang'];
     $no_faktur = $data['no_faktur'];
     $no_transaksi = $data['no_transaksi'];
+    $nomorstokopname = $data['nomorstokopname'];
     $id_detail = $data['id_detail'];
     $jumlah = $data['jumlah'];
 
@@ -73,11 +74,14 @@ function db_insert_stok_barang($data)
         $delete_data = mysqli_query($GLOBALS['koneksi'], "DELETE FROM stokbarang WHERE no_faktur = '$no_faktur' AND id_detail = $id_detail");
     } elseif (!is_null($no_transaksi)) {
         $delete_data = mysqli_query($GLOBALS['koneksi'], "DELETE FROM stokbarang WHERE no_transaksi = '$no_transaksi' AND id_detail = $id_detail");
+    } elseif (!is_null($nomorstokopname)) {
+        $delete_data = mysqli_query($GLOBALS['koneksi'], "DELETE FROM stokbarang WHERE nomorstokopname = '$nomorstokopname'");
     }
 
-    $sql = "INSERT INTO stokbarang (kode_brg, no_faktur, no_transaksi, id_detail, jumlah) VALUE ('$kode_barang', '$no_faktur', '$no_transaksi', $id_detail, $jumlah)";
+    $sql = "INSERT INTO stokbarang (kode_brg, no_faktur, no_transaksi, nomorstokopname, id_detail, jumlah) VALUE ('$kode_barang', '$no_faktur', '$no_transaksi', $nomorstokopname, $id_detail, $jumlah)";
 
     return mysqli_query($GLOBALS['koneksi'], $sql);
+    // return $sql;
 }
 
 function db_list_penjualan($jenis_laporan = null, $kode_barang = null, $nama_barang = null)
@@ -125,20 +129,6 @@ function db_list_penjualan($jenis_laporan = null, $kode_barang = null, $nama_bar
             $where 
         $groupBy 
     ";
-
-    // $sql = "
-    //     SELECT 
-    //         a.*,
-    //         COALESCE(SUM(b.total), 0) AS total, 
-    //         GROUP_CONCAT(barang.nama_brg SEPARATOR ', ') AS barang
-    //     FROM
-    //         penjualan a 
-    //         LEFT JOIN penjualan_barang b 
-    //             ON b.no_transaksi = a.no_transaksi 
-    //         LEFT JOIN barang 
-    //             ON barang.kode_brg = b.kode_brg
-    //     GROUP BY a.no_transaksi  
-    // ";
 
     $result = mysqli_query($GLOBALS['koneksi'], $sql);
     $data = mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -201,24 +191,6 @@ function db_list_pembelian($jenis_laporan = null, $kode_barang = null, $nama_bar
         $where
     $groupBy
     ";
-
-    // $sql = "
-    //     SELECT 
-    //         a.*,
-    //         COALESCE(SUM(b.total), 0) AS total, 
-    //         GROUP_CONCAT(barang.nama_brg SEPARATOR ', ') AS barang
-    //     FROM
-    //         pembelian a
-    //         LEFT JOIN pembelian_barang b
-    //             ON b.no_faktur = a.no_faktur 
-    //         LEFT JOIN barang 
-    //             ON barang.kode_brg = b.kode_brg 
-    //         LEFT JOIN supplier 
-    //             ON supplier.kode_sup = b.kode_sup
-    //     WHERE 1 
-    //         $where 
-    //     GROUP BY a.no_faktur 
-    // ";
 
     $result = mysqli_query($GLOBALS['koneksi'], $sql);
     $data = mysqli_fetch_all($result, MYSQLI_ASSOC);

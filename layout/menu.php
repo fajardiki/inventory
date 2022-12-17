@@ -3,6 +3,7 @@
 <a href="<?= BASE_URL . '/barang/index.php' ?>" class="btn btn-primary">Barang</a>
 <a href="<?= BASE_URL . '/pembelian/index.php' ?>" class="btn btn-primary">Pembelian</a>
 <a href="<?= BASE_URL . '/penjualan/index.php' ?>" class="btn btn-primary">Penjualan</a>
+<a href="<?= BASE_URL . '/stok_opname/index.php' ?>" class="btn btn-primary">Sok Opname</a>
 <?php if (session_is_admin()) { ?>
 <a href="<?= BASE_URL . '/pengguna/index.php' ?>" class="btn btn-primary">Pengguna</a>
 <?php } ?>

@@ -51,6 +51,7 @@ if (isset($_POST['tambah'])) {
                 "kode_barang" => $kode_brg, 
                 "no_faktur" => null, 
                 "no_transaksi" => $no_transaksi, 
+                "nomorstokopname" => null,
                 "id_detail" => $result, 
                 "jumlah" => $jumlah * -1
             ]);
@@ -90,6 +91,7 @@ if (isset($_POST['edit'])) {
                 "kode_barang" => $kode_brg, 
                 "no_faktur" => null, 
                 "no_transaksi" => $no_transaksi, 
+                "nomorstokopname" => null,
                 "id_detail" => $id_detail, 
                 "jumlah" => $jumlah * -1
             ]);
