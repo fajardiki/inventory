@@ -24,40 +24,42 @@ if (isset($_POST['submit'])) {
     $new_nama_brg = $_POST['nama_brg'];
     $new_ukuran = $_POST['ukuran'];
     $new_harga = $_POST['harga'];
-    $new_stok = $_POST['stok'];
     $new_stok_ambang = $_POST['stok_ambang'];
     $new_kode_rak = $_POST['kode_rak'];
-    $new_gambar = $_POST['gambar'];
 
     try {
+        $data_update = [
+            'kode_brg' => $new_kode_brg,
+            'nama_brg' => $new_nama_brg,
+            'ukuran' => $new_ukuran,
+            'harga' => $new_harga,
+            'stok_ambang' => $new_stok_ambang,
+            'kode_rak' => $new_kode_rak
+        ];
+
         // upload_gambar
-        echo json_encode($_FILES['gambar']);
-        if ($_FILES['gambar']) {
+        if ($_FILES['gambar']['error'] == 0) { 
             $nama = $_FILES['gambar']['name'];
             $file_tmp = $_FILES['gambar']['tmp_name'];
-            if (!file_exists('../assets/img/' . $nama)) {
-                move_uploaded_file($file_tmp, '../assets/img/' . $nama);
-                if (file_exists('../assets/img/' . $nama)) {
-                    $new_gambar = $nama;
+
+            move_uploaded_file($file_tmp, '../assets/img/' . $nama);
+            if (file_exists('../assets/img/' . $nama)) {
+                $new_gambar = $nama;
+                if (!empty($new_gambar)) {
+                    $data_update['gambar'] = $new_gambar;
                 }
             }
         }
+
         if ($new_kode_brg != $kode_brg) {
             $barang = db_get_one('barang', "kode_brg='$new_kode_brg'");
             if ($barang) {
                 throw new Exception("Kode barang '$new_kode_brg' sudah digunakan");
             }
         }
-        $result = db_update('barang', [
-            'kode_brg' => $new_kode_brg,
-            'nama_brg' => $new_nama_brg,
-            'ukuran' => $new_ukuran,
-            'harga' => $new_harga,
-            'stok' => $new_stok,
-            'stok_ambang' => $new_stok_ambang,
-            'kode_rak' => $new_kode_rak,
-            'gambar' => $new_gambar
-        ], "kode_brg = '$kode_brg'");
+
+
+        $result = db_update('barang', $data_update, "kode_brg = '$kode_brg'");
         if ($result) {
             session_flash('message', 'Data berhasil diubah');
             header('Location: index.php');
@@ -123,10 +125,10 @@ $error = session_flash('error');
                         <span class="input-group-addon">,00</span>
                     </div>
                 </div>
-                <!-- <div class="form-group">
+                <div class="form-group">
                     <label for="stok">Stok</label>
-                    <input type="number" name="stok" id="stok" class="form-control" min="0" onkeypress="input_number(event)" placeholder="Stok" value="<?= $barang['stok'] ?>" required>
-                </div> -->
+                    <input type="number" name="stok" id="stok" class="form-control" readonly min="0" onkeypress="input_number(event)" placeholder="Stok" value="<?= $barang['stok'] ?>" required>
+                </div>
                 <div class="form-group">
                     <label for="stok_ambang">Stok Ambang</label>
                     <input type="number" name="stok_ambang" id="stok_ambang" class="form-control" min="0" onkeypress="input_number(event)" placeholder="Stok Ambang" value="<?= $barang['stok_ambang'] ?>" required>
@@ -134,7 +136,7 @@ $error = session_flash('error');
                 <div class="form-group">
                     <label for="kode_rak">Rak</label>
                     <select name="kode_rak" id="kode_rak" class="form-control" required>
-                        <option value="">Pilih Rak</option>
+                        <option value="<?= !empty($barang['kode_rak']) ? $barang['kode_rak'] : null ?>"><?= !empty($barang['kode_rak']) ? $barang['kode_rak'] : null ?></option>
                         <?php foreach ($rak as $r) : ?>
                             <option value="<?= $r['kode_rak'] ?>" <?= isset($kode_rak) && $r['kode_rak'] == $barang['kode_rak'] ? 'selected' : '' ?>><?= $r['kode_rak'] ?></option>
                         <?php endforeach; ?>
@@ -144,7 +146,7 @@ $error = session_flash('error');
                     <label for="gambar">Gambar</label>
                     <div class="row">
                         <div class="col-md-4">
-                            <?php if (!is_null($barang['gambar'])) : ?>
+                            <?php if (!is_null($barang['gambar']) && !empty($barang['gambar'])) : ?>
                                 <img style="margin-bottom: 5px;" src="../assets/img/<?= $barang['gambar'] ?>" alt="gambar" width="350">
                             <?php endif; ?>
                             <input type="file" name="gambar" id="gambar" class="form-control" placeholder="Stok Ambang" value="<?= $gambar ?>">

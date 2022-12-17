@@ -32,7 +32,8 @@ function db_insert($table, $data)
     $sql .= implode(', ', array_map(function ($key) use ($data) {
         return "$key = '$data[$key]'";
     }, array_keys($data)));
-    return mysqli_query($GLOBALS['koneksi'], $sql);
+    mysqli_query($GLOBALS['koneksi'], $sql);
+    return mysqli_insert_id($GLOBALS['koneksi']);
 }
 
 function db_update($table, $data, $where)
@@ -48,6 +49,24 @@ function db_update($table, $data, $where)
 function db_delete($table, $where)
 {
     $sql = "DELETE FROM $table WHERE $where";
+    return mysqli_query($GLOBALS['koneksi'], $sql);
+}
+
+function db_insert_stok_barang($data) {
+    $kode_barang = $data['kode_barang'];
+    $no_faktur = $data['no_faktur'];
+    $no_transaksi = $data['no_transaksi'];
+    $id_detail = $data['id_detail'];
+    $jumlah = $data['jumlah'];
+
+    if (!is_null($no_faktur)) {
+        $delete_data = mysqli_query($GLOBALS['koneksi'], "DELETE FROM stokbarang WHERE no_faktur = '$no_faktur' AND id_detail = $id_detail");
+    } elseif (!is_null($no_transaksi)) {
+        $delete_data = mysqli_query($GLOBALS['koneksi'], "DELETE FROM stokbarang WHERE no_transaksi = '$no_transaksi' AND id_detail = $id_detail");
+    }
+
+    $sql = "INSERT INTO stokbarang (kode_brg, no_faktur, no_transaksi, id_detail, jumlah) VALUE ('$kode_barang', '$no_faktur', '$no_transaksi', $id_detail, $jumlah)";
+
     return mysqli_query($GLOBALS['koneksi'], $sql);
 }
 

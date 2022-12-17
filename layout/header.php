@@ -34,7 +34,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" style="display: flex;" href="<?= BASE_URL ?>">
-                    <img src="<?= $BASE_URL . "/assets/img/pngegg.png"; ?>" class="d-inline-block align-top" alt="brand" width="70" height="70" style="border-radius: 50px; border: 3px solid white;">
+                    <img src="<?= $BASE_URL . "/assets/img/logo/pngegg.png"; ?>" class="d-inline-block align-top" alt="brand" width="70" height="70" style="border-radius: 50px; border: 3px solid white;">
                     <span style="font-weight: bold; color: white; padding-left: 15px;">Sistem Inventory Infinity Foam</span>
                 </a>
             </div>

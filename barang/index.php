@@ -76,10 +76,7 @@ $error = session_flash('error');
                         <th>Kode Barang</th>
                         <th>Gambar</th>
                         <th>Nama Barang</th>
-                        <!-- <th>Ukuran</th> -->
-                        <!-- <th>Harga</th> -->
                         <th>Stok</th>
-                        <!-- <th>Stok Ambang</th> -->
                         <th>Rak</th>
                         <?php if (session_is_admin()) { ?>
                             <th>Aksi</th>
@@ -92,15 +89,12 @@ $error = session_flash('error');
                             <td><?= $key + 1 ?></td>
                             <td><?= $value['kode_brg'] ?></td>
                             <td>
-                                <?php if (!is_null($value['gambar'])) : ?>
+                                <?php if (!is_null($value['gambar']) && !empty($value['gambar'])) : ?>
                                     <img style="margin-bottom: 5px;" src="../assets/img/<?= $value['gambar'] ?>" alt="gambar" width="150">
                                 <?php endif; ?>
                             </td>
                             <td><?= $value['nama_brg'] ?></td>
-                            <!-- <td><?= $value['ukuran'] ?></td> -->
-                            <!-- <td>Rp<?= number_format($value['harga'], 2, ',', '.') ?></td> -->
                             <td><?= $value['stok'] ?></td>
-                            <!-- <td><?= $value['stok_ambang'] ?></td> -->
                             <td><a href="#" onclick="tampil('<?= $value['kode_rak'] ?>')"><?= $value['kode_rak'] ?></a></td>
                             <?php if (session_is_admin()) { ?>
                                 <td>

@@ -22,7 +22,7 @@ if (isset($_POST['submit'])) {
 
     try {
         // upload_gambar
-        if ($_FILES['gambar']) {
+        if ($_FILES['gambar']['error'] == 0) {
             $nama = $_FILES['gambar']['name'];
             $file_tmp = $_FILES['gambar']['tmp_name'];
             if (file_exists('../assets/img/' . $nama)) {
