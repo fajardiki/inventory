@@ -7,7 +7,7 @@ $tanggal = date('Y-m');
 
 $sql = "
     SELECT 
-        COUNT(a.nomor) AS jumlah 
+        COUNT(a.tgl_transaksi) AS jumlah 
     FROM
         $table a 
     WHERE 1 

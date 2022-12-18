@@ -286,6 +286,18 @@ if (isset($_POST['penjualan'])) {
     }
 
     function tambah() {
+        $.ajax({
+            url: '../stok_opname/generate_kode.php',
+            dataType: 'json',
+            data: {
+                'table': "penjualan",
+                'prefix_kode': "FKT/"
+            },
+            success: function(response) {
+                console.log(response);
+                $('#no_transaksi').val(response.kode);
+            }
+        })
         $(`#modalTambah`).modal('show');
     }
 
