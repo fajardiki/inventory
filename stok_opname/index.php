@@ -78,7 +78,7 @@ if (isset($_POST['hapus'])) {
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="modalTambah">Tambah Penjualan</h5>
+                            <h5 class="modal-title" id="modalTambah">Tambah Stok Opname</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -86,8 +86,8 @@ if (isset($_POST['hapus'])) {
                         <form method="POST">
                             <div class="modal-body">
                                 <div class="form-group">
-                                    <label for="kode">Kode</label>
-                                    <input type="text" class="form-control" id="kode" name="kode" placeholder="Kode">
+                                    <label for="kode">Kode Stok Opname</label>
+                                    <input type="text" class="form-control" id="kode" name="kode" placeholder="Kode Stok Opname">
                                 </div>
                                 <div class="form-group">
                                     <label for="kode_brg">Barang</label>
