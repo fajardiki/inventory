@@ -21,6 +21,7 @@ $sql = mysqli_query($GLOBALS['koneksi'] ,"
         barang.ukuran,
         barang.gambar,
         barang.nama_brg,
+        barang.harga,
         COALESCE(SUM(a.jumlah), 0) AS stok,
         barang.stok_ambang, 
         barang.kode_rak 
