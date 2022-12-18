@@ -15,8 +15,12 @@ $message = session_flash('message');
 $error = session_flash('error');
 
 if (isset($_POST['simpan'])) {
-    if (empty($_POST['kode']) && empty($_POST['kode_brg']) && empty($_POST['jumlah_stok_opname'])) {
-        session_flash('error', 'Data gagal ditambahkan, Kode, Barang dan Stok Opname tidak boleh kosong');
+    if (empty($_POST['kode'])) {
+        session_flash('error', 'Data gagal ditambahkan, Kode Stok Opname tidak boleh kosong');
+    } elseif (empty($_POST['kode_brg'])) {
+        session_flash('error', 'Data gagal ditambahkan, Barang tidak boleh kosong');
+    } elseif (empty($_POST['jumlah_stok_opname'])) {
+        session_flash('error', 'Data gagal ditambahkan, Stok Opname tidak boleh kosong');
     } else {
         $data = [
             'kode' => $_POST['kode'],
@@ -40,7 +44,8 @@ if (isset($_POST['simpan'])) {
             // exit;
             session_flash('message', 'Data berhasil ditambahkan');
         } else {
-            throw new Exception('Data gagal ditambahkan');
+            session_flash('error', 'Data gagal ditambahkan');
+            // throw new Exception('Data gagal ditambahkan');
         }
     }
     header('Location: index.php');
@@ -87,11 +92,11 @@ if (isset($_POST['hapus'])) {
                             <div class="modal-body">
                                 <div class="form-group">
                                     <label for="kode">Kode Stok Opname</label>
-                                    <input type="text" class="form-control" id="kode" name="kode" placeholder="Kode Stok Opname">
+                                    <input type="text" class="form-control" id="kode" name="kode" placeholder="Kode Stok Opname" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="kode_brg">Barang</label>
-                                    <select name="kode_brg" class="form-control" onchange="onChangeBarang(this)">
+                                    <select name="kode_brg" class="form-control" onchange="onChangeBarang(this)" required>
                                         <option value="" selected></option>
                                         <?php foreach ($semua_barang as $barang) { ?>
                                             <option value="<?= $barang['kode_brg'] ?>"><?= $barang['nama_brg'] ?></option>
@@ -104,7 +109,7 @@ if (isset($_POST['hapus'])) {
                                 </div>
                                 <div class="form-group">
                                     <label for="jumlah_stok_opname">Stok Opname</label>
-                                    <input type="number" min="0" class="form-control" id="jumlah_stok_opname" name="jumlah_stok_opname" placeholder="Stok Opname" onkeyup="calculateStokSelisih(this)" onkeypress="input_number(event)">
+                                    <input type="number" min="0" class="form-control" id="jumlah_stok_opname" name="jumlah_stok_opname" placeholder="Stok Opname" onkeyup="calculateStokSelisih(this)" onkeypress="input_number(event)" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="jumlah_selisih">Stok Selisih</label>

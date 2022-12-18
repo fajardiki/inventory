@@ -81,7 +81,6 @@ function db_insert_stok_barang($data)
     $sql = "INSERT INTO stokbarang (kode_brg, no_faktur, no_transaksi, nomorstokopname, id_detail, jumlah) VALUE ('$kode_barang', '$no_faktur', '$no_transaksi', $nomorstokopname, $id_detail, $jumlah)";
 
     return mysqli_query($GLOBALS['koneksi'], $sql);
-    // return $sql;
 }
 
 function db_list_penjualan($jenis_laporan = null, $kode_barang = null, $nama_barang = null)
