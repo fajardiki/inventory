@@ -28,6 +28,7 @@ if (isset($_POST['simpan'])) {
             'jumlah_stok' => $_POST['jumlah_stok'],
             'jumlah_stok_opname' => $_POST['jumlah_stok_opname'],
             'jumlah_selisih' => $_POST['jumlah_selisih'],
+            'tgl_transaksi' => date('Y-m-d'),
         ];
 
         $result = db_insert_detail('stokopname', $data);
@@ -40,12 +41,9 @@ if (isset($_POST['simpan'])) {
                 "id_detail" => 0,
                 "jumlah" => $_POST['jumlah_selisih']
             ]);
-            // echo json_encode($insert_stok);
-            // exit;
             session_flash('message', 'Data berhasil ditambahkan');
         } else {
             session_flash('error', 'Data gagal ditambahkan');
-            // throw new Exception('Data gagal ditambahkan');
         }
     }
     header('Location: index.php');
@@ -92,7 +90,7 @@ if (isset($_POST['hapus'])) {
                             <div class="modal-body">
                                 <div class="form-group">
                                     <label for="kode">Kode Stok Opname</label>
-                                    <input type="text" class="form-control" id="kode" name="kode" placeholder="Kode Stok Opname" required>
+                                    <input type="text" class="form-control" id="kode" name="kode" placeholder="Kode Stok Opname" readonly required>
                                 </div>
                                 <div class="form-group">
                                     <label for="kode_brg">Barang</label>
@@ -195,6 +193,17 @@ if (isset($_POST['hapus'])) {
     }
 
     function tambah() {
+        $.ajax({
+            url: 'generate_kode.php',
+            dataType: 'json',
+            data: {
+                'table': "stokopname",
+                'prefix_kode': "OPN/"
+            },
+            success: function(response) {
+                $('#kode').val(response.kode);
+            }
+        })
         $(`#modalTambah`).modal('show');
     }
 
