@@ -69,6 +69,7 @@ function db_insert_stok_barang($data)
     $nomorstokopname = $data['nomorstokopname'];
     $id_detail = $data['id_detail'];
     $jumlah = $data['jumlah'];
+    $tgl_transaksi = date('Y-m-d');
 
     if (!is_null($no_faktur)) {
         $delete_data = mysqli_query($GLOBALS['koneksi'], "DELETE FROM stokbarang WHERE no_faktur = '$no_faktur' AND id_detail = $id_detail");
@@ -78,7 +79,7 @@ function db_insert_stok_barang($data)
         $delete_data = mysqli_query($GLOBALS['koneksi'], "DELETE FROM stokbarang WHERE nomorstokopname = '$nomorstokopname'");
     }
 
-    $sql = "INSERT INTO stokbarang (kode_brg, no_faktur, no_transaksi, nomorstokopname, id_detail, jumlah) VALUE ('$kode_barang', '$no_faktur', '$no_transaksi', $nomorstokopname, $id_detail, $jumlah)";
+    $sql = "INSERT INTO stokbarang (kode_brg, no_faktur, no_transaksi, nomorstokopname, id_detail, jumlah, tgl_transaksi) VALUE ('$kode_barang', '$no_faktur', '$no_transaksi', $nomorstokopname, $id_detail, $jumlah, '$tgl_transaksi')";
 
     return mysqli_query($GLOBALS['koneksi'], $sql);
 }
